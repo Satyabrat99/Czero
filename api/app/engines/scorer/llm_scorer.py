@@ -2,6 +2,21 @@ import os
 import json
 from openai import OpenAI
 
+def _parse_json_robust(text):
+    """Parse JSON with fallback for malformed responses."""
+    import json, re
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        scores = re.findall(r'"score":\s*(\d+)', text)
+        reasons = re.findall(r'"reason":\s*"([^"]+)"', text)
+        if scores:
+            return [{'score': int(s), 'reason': reasons[i] if i < len(reasons) else 'No reason'} 
+                    for i, s in enumerate(scores)]
+        return None
+
+
+
 
 # Available LLM providers
 PROVIDERS = {
@@ -87,7 +102,7 @@ Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
             
             response = self.client.chat.completions.create(**kwargs)
             
-            result = json.loads(response.choices[0].message.content)
+            result = _parse_json_robust(response.choices[0].message.content)
             return {
                 "score": min(100, max(0, result.get("score", 0))),
                 "reason": result.get("reason", "No reason provided")
@@ -130,7 +145,7 @@ Return JSON array: [{{"score": N, "reason": "..."}}, ...]"""
             
             response = self.client.chat.completions.create(**kwargs)
             
-            result = json.loads(response.choices[0].message.content)
+            result = _parse_json_robust(response.choices[0].message.content)
             
             # Handle both array and object responses
             if isinstance(result, list):
