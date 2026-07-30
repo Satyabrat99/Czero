@@ -14,7 +14,7 @@ PROVIDERS = {
     "mimo": {
         "name": "Xiaomi MiMo",
         "base_url": "https://api.xiaomimimo.com/v1",
-        "model": "mimo-v2.5-pro",
+        "model": "mimo-v2.5",
         "env_key": "MIMO_API_KEY",
     },
 }
@@ -26,7 +26,7 @@ class LLMIntentScorer:
     
     Supports:
     - OpenAI (gpt-4o-mini)
-    - Xiaomi MiMo (mimo-v2.5-pro)
+    - Xiaomi MiMo (mimo-v2.5)
     
     Provider is selected via LLM_PROVIDER env var.
     Falls back to OpenAI if not set.
