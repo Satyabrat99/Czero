@@ -60,20 +60,27 @@ async def collect_and_score(product: ProductCreate):
         if lead["source_url"] in enriched_map:
             leads[i] = enriched_map[lead["source_url"]]
 
-    hot = sum(1 for l in leads if l["category"] == "hot")
-    warm = sum(1 for l in leads if l["category"] == "warm")
-    cold = sum(1 for l in leads if l["category"] == "cold")
-    with_email = sum(1 for l in leads if l.get("email"))
-    with_linkedin = sum(1 for l in leads if l.get("linkedin_url"))
+    # FILTER: Only return hot + warm leads (cold leads are useless)
+    hot_warm_leads = [l for l in leads if l["category"] in ["hot", "warm"]]
+
+    hot = sum(1 for l in hot_warm_leads if l["category"] == "hot")
+    warm = sum(1 for l in hot_warm_leads if l["category"] == "warm")
+    with_email = sum(1 for l in hot_warm_leads if l.get("email"))
+    with_linkedin = sum(1 for l in hot_warm_leads if l.get("linkedin_url"))
 
     return {
         "collection": {
             "total_raw": collection_result["total_raw"],
             "total_unique": collection_result["total_unique"],
         },
-        "scoring": {"total": len(leads), "hot": hot, "warm": warm, "cold": cold},
+        "scoring": {
+            "total_scored": len(leads),
+            "hot": hot,
+            "warm": warm,
+            "cold_filtered": len(leads) - len(hot_warm_leads),
+        },
         "enrichment": {"with_email": with_email, "with_linkedin": with_linkedin},
-        "leads": leads[:20],
+        "leads": hot_warm_leads[:20],
     }
 
 
@@ -92,25 +99,30 @@ async def full_pipeline(product: ProductCreate):
         if lead["source_url"] in enriched_map:
             leads[i] = enriched_map[lead["source_url"]]
 
+    # Generate drafts for hot + warm
     for lead in leads:
         if lead["category"] in ["hot", "warm"]:
             drafts = drafter.generate_drafts(lead, product.model_dump())
             lead.update(drafts)
 
-    hot = sum(1 for l in leads if l["category"] == "hot")
-    warm = sum(1 for l in leads if l["category"] == "warm")
-    with_email = sum(1 for l in leads if l.get("email"))
-    with_drafts = sum(1 for l in leads if l.get("email_draft"))
+    # FILTER: Only return hot + warm leads
+    hot_warm_leads = [l for l in leads if l["category"] in ["hot", "warm"]]
+
+    hot = sum(1 for l in hot_warm_leads if l["category"] == "hot")
+    warm = sum(1 for l in hot_warm_leads if l["category"] == "warm")
+    with_email = sum(1 for l in hot_warm_leads if l.get("email"))
+    with_drafts = sum(1 for l in hot_warm_leads if l.get("email_draft"))
 
     return {
         "stats": {
             "total": len(leads),
             "hot": hot,
             "warm": warm,
+            "cold_filtered": len(leads) - len(hot_warm_leads),
             "with_email": with_email,
             "with_drafts": with_drafts,
         },
-        "leads": leads[:20],
+        "leads": hot_warm_leads[:20],
     }
 
 

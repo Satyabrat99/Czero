@@ -10,19 +10,21 @@ PROVIDERS = {
         "base_url": "https://api.openai.com/v1",
         "model": "gpt-4o-mini",
         "env_key": "OPENAI_API_KEY",
+        "extra_body": None,
     },
     "mimo": {
         "name": "Xiaomi MiMo",
         "base_url": "https://api.xiaomimimo.com/v1",
         "model": "mimo-v2.5",
         "env_key": "MIMO_API_KEY",
+        "extra_body": {"thinking": {"type": "disabled"}},
     },
 }
 
 
 class LLMIntentScorer:
     """
-    LLM scoring with multi-provider support.
+    LLM scoring with multi-provider support and batch mode.
     
     Supports:
     - OpenAI (gpt-4o-mini)
@@ -39,6 +41,7 @@ class LLMIntentScorer:
         api_key = os.getenv(provider["env_key"])
         self.model = provider["model"]
         self.provider_name = provider["name"]
+        self.extra_body = provider.get("extra_body")
         
         if api_key:
             self.client = OpenAI(
@@ -72,13 +75,17 @@ Score:
 Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
         
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                response_format={"type": "json_object"},
-                temperature=0.3,
-                max_tokens=200
-            )
+            kwargs = {
+                "model": self.model,
+                "messages": [{"role": "user", "content": prompt}],
+                "response_format": {"type": "json_object"},
+                "temperature": 0.3,
+                "max_tokens": 200
+            }
+            if self.extra_body:
+                kwargs["extra_body"] = self.extra_body
+            
+            response = self.client.chat.completions.create(**kwargs)
             
             result = json.loads(response.choices[0].message.content)
             return {
@@ -88,3 +95,62 @@ Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
         except Exception as e:
             print(f"LLM scoring error ({self.provider_name}): {e}")
             return {"score": 0, "reason": f"Scoring error: {e}"}
+    
+    async def score_batch(self, signals: list, product_description: str, icp: dict) -> list[dict]:
+        """Score multiple signals in one LLM call (5x faster than individual)."""
+        if not self.client:
+            return [{"score": 0, "reason": "LLM API key not configured"}] * len(signals)
+        
+        # Build batch prompt
+        posts_text = ""
+        for i, signal in enumerate(signals):
+            posts_text += f"\n--- POST {i+1} ---\n{signal.text[:300]}\n"
+        
+        prompt = f"""Score these {len(signals)} social media posts for buying intent (0-100 each).
+
+Product: {product_description}
+Target customer: {json.dumps(icp)}
+
+Posts:
+{posts_text}
+
+For EACH post, return score and reason.
+Return JSON array: [{{"score": N, "reason": "..."}}, ...]"""
+        
+        try:
+            kwargs = {
+                "model": self.model,
+                "messages": [{"role": "user", "content": prompt}],
+                "response_format": {"type": "json_object"},
+                "temperature": 0.3,
+                "max_tokens": 500
+            }
+            if self.extra_body:
+                kwargs["extra_body"] = self.extra_body
+            
+            response = self.client.chat.completions.create(**kwargs)
+            
+            result = json.loads(response.choices[0].message.content)
+            
+            # Handle both array and object responses
+            if isinstance(result, list):
+                scores = result
+            elif isinstance(result, dict) and "scores" in result:
+                scores = result["scores"]
+            else:
+                scores = [result] * len(signals)
+            
+            # Pad if needed
+            while len(scores) < len(signals):
+                scores.append({"score": 0, "reason": "Score not provided"})
+            
+            return [
+                {
+                    "score": min(100, max(0, s.get("score", 0))),
+                    "reason": s.get("reason", "No reason")
+                }
+                for s in scores[:len(signals)]
+            ]
+        except Exception as e:
+            print(f"LLM batch scoring error ({self.provider_name}): {e}")
+            return [{"score": 0, "reason": f"Error: {e}"}] * len(signals)
