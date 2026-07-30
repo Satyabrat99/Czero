@@ -3,11 +3,15 @@ from pydantic import BaseModel
 from app.engines.collector import CollectorEngine
 from app.engines.scorer import ScorerEngine
 from app.engines.enricher import EnricherEngine
+from app.services.drafter import OutreachDrafter
+from app.services.emailer import EmailSender
 
 router = APIRouter()
 collector = CollectorEngine()
 scorer = ScorerEngine()
 enricher = EnricherEngine()
+drafter = OutreachDrafter()
+emailer = EmailSender()
 
 
 class AnalyzeRequest(BaseModel):
@@ -27,7 +31,7 @@ class ProductCreate(BaseModel):
 @router.post("/analyze")
 async def analyze_product(req: AnalyzeRequest):
     """Analyze a URL and extract product info using LLM."""
-    # TODO: Implement LLM analysis in Phase 3
+    # TODO: Implement LLM analysis
     return {
         "url": req.url,
         "name": "Product",
@@ -69,6 +73,43 @@ async def collect_and_score(product: ProductCreate):
         },
         "scoring": {"total": len(leads), "hot": hot, "warm": warm, "cold": cold},
         "enrichment": {"with_email": with_email, "with_linkedin": with_linkedin},
+        "leads": leads[:20],
+    }
+
+
+@router.post("/full-pipeline")
+async def full_pipeline(product: ProductCreate):
+    """Complete pipeline: collect -> score -> enrich -> draft."""
+    collection_result = await collector.collect_for_product(product.model_dump())
+    signals = collection_result["signals"]
+
+    leads = await scorer.score_signals(signals, product.model_dump())
+
+    enrichable = [l for l in leads if l["category"] in ["hot", "warm"]]
+    enriched = await enricher.enrich_batch(enrichable)
+    enriched_map = {l["source_url"]: l for l in enriched}
+    for i, lead in enumerate(leads):
+        if lead["source_url"] in enriched_map:
+            leads[i] = enriched_map[lead["source_url"]]
+
+    for lead in leads:
+        if lead["category"] in ["hot", "warm"]:
+            drafts = drafter.generate_drafts(lead, product.model_dump())
+            lead.update(drafts)
+
+    hot = sum(1 for l in leads if l["category"] == "hot")
+    warm = sum(1 for l in leads if l["category"] == "warm")
+    with_email = sum(1 for l in leads if l.get("email"))
+    with_drafts = sum(1 for l in leads if l.get("email_draft"))
+
+    return {
+        "stats": {
+            "total": len(leads),
+            "hot": hot,
+            "warm": warm,
+            "with_email": with_email,
+            "with_drafts": with_drafts,
+        },
         "leads": leads[:20],
     }
 
