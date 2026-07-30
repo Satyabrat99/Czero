@@ -73,19 +73,33 @@ class LLMIntentScorer:
         if not self.client:
             return {"score": 0, "reason": "LLM API key not configured"}
         
-        prompt = f"""Score this social media post for buying intent (0-100).
+        prompt = f"""Score this social media post for BUYING INTENT (0-100).
 
 Product: {product_description}
 Target customer: {json.dumps(icp)}
 
 Post: "{text[:500]}"
 
+CRITICAL: We want people who WANT TO BUY, not people who BUILD or DISCUSS.
+
 Score:
-- 90-100: Directly asking for this type of product
-- 70-89: Strong interest in solving this problem
-- 50-69: Discussing the problem space
-- 30-49: Tangential mention
-- 0-29: No intent
+- 90-100: Explicitly asking to buy/find/get this type of product ("anyone know a good X?", "looking for X alternative", "need X")
+- 70-89: Strong buying signal ("frustrated with current tool", "ready to switch", "budget approved")
+- 50-69: Considering ("comparing options", "evaluating solutions")
+- 30-49: Just discussing the topic (no buying signal)
+- 10-29: Building/competing with this product (COMPETITOR, not buyer)
+- 0: Completely unrelated
+
+DO NOT score high for:
+- People BUILDING similar products (they are competitors, not buyers)
+- People DISCUSSING the topic theoretically
+- Articles/tutorials about the topic
+- Technical implementations
+
+DO score high for:
+- People asking for recommendations
+- People expressing frustration with current solutions
+- People actively looking to switch or buy
 
 Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
         
@@ -121,15 +135,28 @@ Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
         for i, signal in enumerate(signals):
             posts_text += f"\n--- POST {i+1} ---\n{signal.text[:300]}\n"
         
-        prompt = f"""Score these {len(signals)} social media posts for buying intent (0-100 each).
+        prompt = f"""Score these {len(signals)} social media posts for BUYING INTENT (0-100 each).
 
 Product: {product_description}
 Target customer: {json.dumps(icp)}
 
+CRITICAL: We want people who WANT TO BUY, not people who BUILD or DISCUSS.
+
 Posts:
 {posts_text}
 
-For EACH post, return score and reason.
+For EACH post, score based on:
+- 90-100: Explicitly asking to buy/find/get this product
+- 70-89: Strong buying signal (frustrated, ready to switch)
+- 50-69: Considering options
+- 30-49: Just discussing (no buying signal)
+- 10-29: Building/competing (COMPETITOR, not buyer)
+- 0: Unrelated
+
+DO NOT score high for people BUILDING similar products.
+DO NOT score high for articles/tutorials.
+DO score high for people ASKING for recommendations.
+
 Return JSON array: [{{"score": N, "reason": "..."}}, ...]"""
         
         try:
