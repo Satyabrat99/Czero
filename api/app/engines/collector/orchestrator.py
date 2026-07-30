@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from .sources.reddit import RedditSourceManager
+from .sources.reddit_via_exa import RedditViaExaCollector
 from .sources.hn import HNSourceManager
 from .sources.exa import ExaSourceManager
 from .sources.twitter import TwitterSourceManager
@@ -14,11 +14,18 @@ class CollectorEngine:
 
     KEY: All sources run INDEPENDENTLY in parallel.
     Results MERGE at the end. No source filters another.
+
+    Sources:
+    - Reddit via Exa (semantic search, no API needed)
+    - Exa general (web-wide semantic search)
+    - HN via Algolia (free, no approval)
+    - Twitter via Scweet (free, needs auth_token)
+    - LinkedIn via no-cookies scraper (free)
     """
 
     def __init__(self):
         self.sources = {
-            "reddit": RedditSourceManager(),
+            "reddit": RedditViaExaCollector(),
             "hn": HNSourceManager(),
             "exa": ExaSourceManager(),
             "twitter": TwitterSourceManager(),
@@ -27,11 +34,7 @@ class CollectorEngine:
         self.merger = SignalMerger()
 
     async def collect_for_product(self, product: dict) -> dict:
-        """
-        Collect all signals for a product from all sources in parallel.
-
-        Returns collection stats.
-        """
+        """Collect all signals for a product from all sources in parallel."""
         tasks = []
         for name, source in self.sources.items():
             tasks.append(self._collect_with_timeout(source, product, timeout=30))
@@ -58,7 +61,6 @@ class CollectorEngine:
         }
 
     async def _collect_with_timeout(self, source, product, timeout: int):
-        """Collect from a source with timeout."""
         try:
             return await asyncio.wait_for(source.collect(product), timeout=timeout)
         except asyncio.TimeoutError:

@@ -48,8 +48,8 @@ class ExaSourceManager(BaseSourceManager):
                 results = exa.search(
                     query,
                     type="auto",
-                    numResults=10,
-                    startPublishedDate=(datetime.now() - timedelta(days=7)).isoformat(),
+                    num_results=10,
+                    start_published_date=(datetime.now() - timedelta(days=7)).isoformat(),
                     contents={"highlights": True}
                 )
 
@@ -61,7 +61,7 @@ class ExaSourceManager(BaseSourceManager):
                         source_url=result.url,
                         author_username=result.author or "unknown",
                         text=result.text or result.title or "",
-                        posted_at=result.publishedDate,
+                        posted_at=result.published_date,
                         metadata={
                             "exa_score": getattr(result, 'score', None),
                             "domain": result.url.split("/")[2] if "/" in result.url else "",
