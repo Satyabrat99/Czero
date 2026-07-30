@@ -16,6 +16,7 @@ cryptography==49.0.0
 defusedxml==0.7.1
 deprecation==2.1.0
 distro==1.9.0
+dnspython==2.8.0
 exa-py==2.16.2
 fastapi==0.141.1
 h11==0.16.0
