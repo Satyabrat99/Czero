@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from .sources.reddit_via_rss import RedditViaRssCollector
+from .sources.reddit_rss import RedditRSSCollector
 from .sources.hn import HNSourceManager
 from .sources.exa import ExaSourceManager
 from .sources.twitter import TwitterSourceManager
@@ -25,7 +25,7 @@ class CollectorEngine:
 
     def __init__(self):
         self.sources = {
-            "reddit": RedditViaRssCollector(),
+            "reddit": RedditRSSCollector(),
             "hn": HNSourceManager(),
             "exa": ExaSourceManager(),
             "twitter": TwitterSourceManager(),

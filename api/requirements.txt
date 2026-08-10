@@ -19,6 +19,7 @@ distro==1.9.0
 dnspython==2.8.0
 exa-py==2.16.2
 fastapi==0.141.1
+feedparser==6.0.14
 h11==0.16.0
 h2==4.4.0
 hpack==4.2.0
