@@ -22,7 +22,8 @@ export default function Login() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      // Use window.location for full page reload to ensure session is set
+      window.location.href = '/dashboard'
     }
   }
 
