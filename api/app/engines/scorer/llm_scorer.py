@@ -1,10 +1,11 @@
 import os
 import json
+import re
 from openai import OpenAI
+
 
 def _parse_json_robust(text):
     """Parse JSON with fallback for malformed responses."""
-    import json, re
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -14,6 +15,83 @@ def _parse_json_robust(text):
             return [{'score': int(s), 'reason': reasons[i] if i < len(reasons) else 'No reason'}
                     for i, s in enumerate(scores)]
         return None
+
+
+SCORE_PROMPT = """You are an expert buyer intent classifier for B2B SaaS products.
+
+Your job: Score this post 0-100 based on HOW LIKELY the author is to BUY a product like ours.
+
+PRODUCT WE'RE SELLING: {product_description}
+
+POST TO SCORE:
+Source: {source}
+Text: {text}
+
+SCORING RULES (CRITICAL):
+
+HIGH SCORE (70-100) — ACTUAL BUYERS:
+- "Looking for X" / "Need X" / "Anyone know X?" — actively searching
+- "Alternative to [Competitor]" — ready to switch
+- "Frustrated with X" — pain signal, wants solution
+- "What do you use for X?" — asking for recommendations
+- "Budget approved for X" — ready to buy
+
+MEDIUM SCORE (40-69) — POTENTIAL BUYERS:
+- "Considering X" — in research phase
+- "Comparing X vs Y" — evaluating options
+- "Has anyone tried X?" — curious but not committed
+
+LOW SCORE (0-39) — NOT BUYERS:
+- "I built X" — competitor/builder, NOT a buyer
+- "Check out my product" — promotional, NOT a buyer
+- "10 best X tools" — article/listicle, NOT a buyer
+- "X just launched" — news, NOT a buyer
+- "How X works" — educational, NOT a buyer
+- Mentions product names without asking for alternatives
+
+DO NOT score high just because keywords match.
+A post can contain "looking for" but still be promotional:
+- "Looking for beta users for my product" → LOW SCORE (promoting)
+- "Looking for a good invoicing tool" → HIGH SCORE (buying)
+
+Return JSON: {{"score": N, "reason": "1-2 sentences explaining WHY this is or isn't a buyer"}}
+"""
+
+
+BATCH_SCORE_PROMPT = """You are an expert buyer intent classifier for B2B SaaS products.
+
+Your job: Score each post 0-100 based on HOW LIKELY the author is to BUY a product like ours.
+
+PRODUCT WE'RE SELLING: {product_description}
+
+SCORING RULES (CRITICAL):
+
+HIGH SCORE (70-100) — ACTUAL BUYERS:
+- "Looking for X" / "Need X" / "Anyone know X?" — actively searching
+- "Alternative to [Competitor]" — ready to switch
+- "Frustrated with X" — pain signal, wants solution
+- "What do you use for X?" — asking for recommendations
+
+MEDIUM SCORE (40-69) — POTENTIAL BUYERS:
+- "Considering X" — in research phase
+- "Comparing X vs Y" — evaluating options
+
+LOW SCORE (0-39) — NOT BUYERS:
+- "I built X" — competitor/builder, NOT a buyer
+- "Check out my product" — promotional, NOT a buyer
+- "10 best X tools" — article/listicle, NOT a buyer
+- "X just launched" — news, NOT a buyer
+
+DO NOT score high just because keywords match.
+- "Looking for beta users for my product" → LOW SCORE (promoting)
+- "Looking for a good invoicing tool" → HIGH SCORE (buying)
+
+POSTS:
+{posts_text}
+
+For EACH post, return: {{"score": N, "reason": "1-2 sentences explaining WHY this is or isn't a buyer"}}
+Return JSON array: [{{"score": N, "reason": "..."}}, ...]
+"""
 
 
 # Available LLM providers
@@ -52,14 +130,13 @@ PROVIDERS = {
 class LLMIntentScorer:
     """
     LLM scoring with multi-provider support and batch mode.
-    
-    Supports OpenAI, MiMo, and CommandCode.
-    Provider selected via LLM_PROVIDER env var.
+
+    Distinguishes BUYERS from BUILDERS/PROMOTERS/ARTICLES.
     Falls back to heuristic scoring if LLM unavailable.
     """
 
     TIMEOUT_SECONDS = 60
-    
+
     def __init__(self):
         provider_name = os.getenv("LLM_PROVIDER", "openai")
         provider = PROVIDERS.get(provider_name, PROVIDERS["openai"])
@@ -79,55 +156,90 @@ class LLMIntentScorer:
         else:
             self.client = None
             print(f"WARNING: {provider['env_key']} not set — using heuristic scoring")
-    
+
     def _heuristic_score(self, text: str) -> dict:
-        """Fallback heuristic scoring when LLM is unavailable."""
+        """Intelligent heuristic scoring that distinguishes buyers from promoters."""
         text_lower = text.lower()
 
-        strong_signals = [
+        # PROMOTIONAL patterns — these are builders/promoters, NOT buyers
+        promotional_patterns = [
+            r"i built", r"i made", r"i created", r"i launched",
+            r"check out", r"my product", r"my app", r"my saas",
+            r"just launched", r"introducing", r"announcing", r"new feature",
+            r"beta users", r"beta testers", r"early access",
+            r"join waitlist", r"sign up",
+            r"10 best", r"top 10", r"list of", r"comparison of",
+            r"how to use", r"tutorial", r"guide to", r"learn about",
+            r"case study", r"success story", r"testimonial",
+            r"looking for.*beta",
+            r"looking for.*testers",
+            r"we (are|just|have|built|launched)",
+            r"what (saas|tool|app) (do you|should i|would)",
+            r"what do you wish",
+            r"ideas? to get money",
+            r"co-founder wanted",
+            r"looking for (a )?(full[- ]?stack|developer|engineer|technical)",
+        ]
+        for pattern in promotional_patterns:
+            if re.search(pattern, text_lower):
+                return {"score": 15, "reason": "Promotional/builder content — author is building, not buying"}
+
+        # STRONG BUYER signals — actively looking to buy
+        strong_buyer_patterns = [
+            r"looking for (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"need (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"anyone know (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"recommend (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"alternative to",
+            r"switching from",
+            r"frustrated with",
+            r"ready to buy",
+            r"budget approved",
+            r"what do you use for",
+            r"what'?s the best",
+            r"help me find",
+            r"any suggestions for",
+        ]
+        for pattern in strong_buyer_patterns:
+            if re.search(pattern, text_lower):
+                return {"score": 80, "reason": "Strong buyer intent — actively searching for a solution"}
+
+        # MEDIUM BUYER signals — considering options
+        medium_buyer_patterns = [
+            r"considering",
+            r"comparing",
+            r"has anyone tried",
+            r"evaluating",
+            r"worth it",
+            r"how do you handle",
+            r"better than",
+            r"suggestion",
+            r"advice",
+        ]
+        for pattern in medium_buyer_patterns:
+            if re.search(pattern, text_lower):
+                return {"score": 60, "reason": "Medium buyer intent — considering options"}
+
+        # WEAK signals — just discussing
+        weak_signals = [
             "looking for", "need", "anyone know", "recommend",
-            "alternative to", "switching from", "frustrated with",
-            "help me find", "what do you use", "what's the best",
-            "ready to buy", "any suggestions",
         ]
-        medium_signals = [
-            "better than", "suggestion", "advice", "how do you",
-            "open to", "worth it", "comparing",
-        ]
-
-        for phrase in strong_signals:
+        for phrase in weak_signals:
             if phrase in text_lower:
-                return {"score": 75, "reason": f"Strong intent signal: contains '{phrase}'"}
+                return {"score": 45, "reason": "Weak intent signal — might be buying, needs LLM judgment"}
 
-        for phrase in medium_signals:
-            if phrase in text_lower:
-                return {"score": 55, "reason": f"Medium intent signal: contains '{phrase}'"}
-
-        return {"score": 35, "reason": "Weak intent — keyword match only"}
+        return {"score": 25, "reason": "No clear buying intent detected"}
 
     async def score(self, text: str, product_description: str, icp: dict) -> dict:
         """Score a single signal for buying intent."""
         if not self.client:
             return self._heuristic_score(text)
 
-        prompt = f"""Score this social media post for BUYING INTENT (0-100).
-
-Product: {product_description}
-Target customer: {json.dumps(icp)}
-
-Post: "{text[:500]}"
-
-CRITICAL: We want people who WANT TO BUY, not people who BUILD or DISCUSS.
-
-Score:
-- 90-100: Explicitly asking to buy/find/get this type of product
-- 70-89: Strong buying signal
-- 50-69: Considering
-- 30-49: Just discussing (no buying signal)
-- 10-29: Building/competing (COMPETITOR)
-- 0: Completely unrelated
-
-Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
+        prompt = SCORE_PROMPT.format(
+            product_description=product_description,
+            source="social media",
+            text=text[:500],
+        )
 
         try:
             kwargs = {
@@ -152,35 +264,20 @@ Return JSON: {{"score": N, "reason": "1-2 sentences explaining why"}}"""
         except Exception as e:
             print(f"LLM scoring error ({self.provider_name}): {e}")
             return self._heuristic_score(text)
-    
+
     async def score_batch(self, signals: list, product_description: str, icp: dict) -> list[dict]:
-        """Score multiple signals in one LLM call (5x faster than individual)."""
+        """Score multiple signals in one LLM call."""
         if not self.client:
             return [self._heuristic_score(s.text) for s in signals]
 
         posts_text = ""
         for i, signal in enumerate(signals):
-            posts_text += f"\n--- POST {i+1} ---\n{signal.text[:300]}\n"
+            posts_text += f"\n--- POST {i+1} (Source: {signal.source}) ---\n{signal.text[:300]}\n"
 
-        prompt = f"""Score these {len(signals)} social media posts for BUYING INTENT (0-100 each).
-
-Product: {product_description}
-Target customer: {json.dumps(icp)}
-
-CRITICAL: We want people who WANT TO BUY, not people who BUILD or DISCUSS.
-
-Posts:
-{posts_text}
-
-For EACH post, score based on:
-- 90-100: Explicitly asking to buy/find/get this product
-- 70-89: Strong buying signal (frustrated, ready to switch)
-- 50-69: Considering options
-- 30-49: Just discussing (no buying signal)
-- 10-29: Building/competing (COMPETITOR)
-- 0: Unrelated
-
-Return JSON array: [{{"score": N, "reason": "..."}}, ...]"""
+        prompt = BATCH_SCORE_PROMPT.format(
+            product_description=product_description,
+            posts_text=posts_text,
+        )
 
         try:
             kwargs = {
@@ -205,7 +302,7 @@ Return JSON array: [{{"score": N, "reason": "..."}}, ...]"""
                 return [self._heuristic_score(s.text) for s in signals]
 
             while len(scores) < len(signals):
-                scores.append({"score": 35, "reason": "Score not provided"})
+                scores.append({"score": 25, "reason": "Score not provided"})
 
             return [
                 {

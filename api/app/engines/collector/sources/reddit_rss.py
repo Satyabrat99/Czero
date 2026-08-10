@@ -177,11 +177,68 @@ class RedditRSSCollector(BaseSourceManager):
     def _detect_intent(self, text: str) -> dict:
         """Detect buying intent in post text."""
         text_lower = text.lower()
-        
-        for phrase in INTENT_PHRASES:
+
+        # PROMOTIONAL patterns — these are builders/promoters, NOT buyers
+        # Check these FIRST to catch "Looking for beta testers", "I built X", etc.
+        promotional_patterns = [
+            r"i built", r"i made", r"i created", r"i launched",
+            r"check out", r"my product", r"my app", r"my saas",
+            r"just launched", r"introducing", r"announcing",
+            r"beta users", r"beta testers", r"early access",
+            r"join waitlist", r"sign up",
+            r"10 best", r"top 10", r"list of", r"comparison of",
+            r"looking for.*beta",
+            r"looking for.*testers",
+            r"what (saas|tool|app) (do you|should i|would)",
+            r"what do you wish",
+            r"ideas? to get money",
+            r"co-founder wanted",
+            r"looking for (a )?(full[- ]?stack|developer|engineer|technical)",
+        ]
+        for pattern in promotional_patterns:
+            if re.search(pattern, text_lower):
+                return {"type": "promotional", "score": 15}
+
+        # STRONG BUYER signals — actively looking to buy
+        strong_buyer_patterns = [
+            r"looking for (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"need (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"anyone know (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"recommend (a|an|the|some|any)? ?\w+ (tool|software|app|platform|solution|alternative)",
+            r"alternative to",
+            r"switching from",
+            r"frustrated with",
+            r"ready to buy",
+            r"budget approved",
+            r"what do you use for",
+            r"what'?s the best",
+            r"help me find",
+        ]
+        for pattern in strong_buyer_patterns:
+            if re.search(pattern, text_lower):
+                return {"type": "strong", "score": 80}
+
+        # MEDIUM BUYER signals — considering options
+        medium_buyer_patterns = [
+            r"considering",
+            r"comparing",
+            r"has anyone tried",
+            r"evaluating",
+            r"worth it",
+            r"how do you handle",
+        ]
+        for pattern in medium_buyer_patterns:
+            if re.search(pattern, text_lower):
+                return {"type": "medium", "score": 60}
+
+        # WEAK signals — just discussing
+        weak_signals = [
+            "looking for", "need", "anyone know", "recommend",
+        ]
+        for phrase in weak_signals:
             if phrase in text_lower:
-                return {"type": "strong", "score": 85}
-        
+                return {"type": "weak", "score": 45}
+
         return {"type": "none", "score": 0}
     
     def _extract_subreddit(self, url: str) -> str:

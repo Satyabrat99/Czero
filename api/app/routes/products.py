@@ -86,12 +86,13 @@ async def collect_and_score(product: ProductCreate):
 
 @router.post("/full-pipeline")
 async def full_pipeline(product: ProductCreate):
-    """Complete pipeline: collect -> score -> enrich -> draft."""
+    """Complete pipeline: collect -> score -> enrich -> draft. Only hot/warm with score >= 60."""
     collection_result = await collector.collect_for_product(product.model_dump())
     signals = collection_result["signals"]
 
     leads = await scorer.score_signals(signals, product.model_dump())
 
+    # Enrich hot + warm
     enrichable = [l for l in leads if l["category"] in ["hot", "warm"]]
     enriched = await enricher.enrich_batch(enrichable)
     enriched_map = {l["source_url"]: l for l in enriched}
@@ -105,8 +106,8 @@ async def full_pipeline(product: ProductCreate):
             drafts = drafter.generate_drafts(lead, product.model_dump())
             lead.update(drafts)
 
-    # FILTER: Only return hot + warm leads
-    hot_warm_leads = [l for l in leads if l["category"] in ["hot", "warm"]]
+    # ONLY return hot + warm leads with score >= 60
+    hot_warm_leads = [l for l in leads if l["category"] in ["hot", "warm"] and l["final_score"] >= 60]
 
     hot = sum(1 for l in hot_warm_leads if l["category"] == "hot")
     warm = sum(1 for l in hot_warm_leads if l["category"] == "warm")

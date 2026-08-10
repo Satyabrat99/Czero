@@ -20,29 +20,47 @@ class OutreachDrafter:
         post_text = lead.get("text", "")
         product_desc = product.get("description", "")
         product_name = product.get("name", "our product")
+        reasoning = lead.get("reasoning", "")
+        author = lead.get("author_username", "there")
 
         prompts = {
             "email_draft": f"""Write a 3-sentence cold email to someone who posted:
 "{post_text[:300]}"
 
 Our product: {product_name} - {product_desc}
+Why we're reaching out: {reasoning}
 
-Sound human, not salesy. Reference their specific post. Include one soft CTA.
+Rules:
+- Reference their SPECIFIC post (not generic)
+- Sound human, not salesy
+- One soft CTA (not pushy)
+- Keep it under 50 words
+
 Return ONLY the email text, no subject line.""",
             "linkedin_dm_draft": f"""Write a 2-sentence LinkedIn message to someone who posted:
 "{post_text[:300]}"
 
 Our product: {product_name} - {product_desc}
+Why we're reaching out: {reasoning}
 
-Short, friendly, reference their post.
+Rules:
+- Short, friendly, reference their post
+- Sound like a real person, not a salesperson
+- One soft CTA
+
 Return ONLY the message text.""",
             "reddit_reply_draft": f"""Write a helpful Reddit reply to:
 "{post_text[:300]}"
 
 Our product: {product_name} - {product_desc}
+Why we're reaching out: {reasoning}
 
-Answer their question genuinely. Mention product naturally, not pushy.
-Sound like a real community member.
+Rules:
+- Answer their question genuinely
+- Mention product naturally, not pushy
+- Sound like a real community member
+- Be helpful first, promotional second
+
 Return ONLY the reply text.""",
         }
 
@@ -66,20 +84,22 @@ Return ONLY the reply text.""",
         product_name = product.get("name", "our product")
         post_text = lead.get("text", "")[:100]
         author = lead.get("author_username", "there")
+        reasoning = lead.get("reasoning", "")
 
         return {
             "email_draft": (
                 f"Hi {author},\n\n"
                 f"I saw your post about {post_text[:60]}... and thought {product_name} might help.\n\n"
+                f"{reasoning}\n\n"
                 f"Worth a quick look? Happy to give you free access.\n\n"
                 f"Best"
             ),
             "linkedin_dm_draft": (
-                f"Hey {author}, saw your post about scheduling — "
-                f"curious if you've tried {product_name}? Would love your feedback."
+                f"Hey {author}, saw your post — {reasoning.lower()}. "
+                f"Curious if you've tried {product_name}? Would love your feedback."
             ),
             "reddit_reply_draft": (
-                f"Hey! {product_name} might be worth checking out for this. "
-                f"It handles scheduling automatically. Free to try."
+                f"Hey! Based on what you're looking for, {product_name} might be worth checking out. "
+                f"{reasoning} Free to try."
             ),
         }
