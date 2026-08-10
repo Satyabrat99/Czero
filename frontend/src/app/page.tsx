@@ -4,12 +4,12 @@ export default function Home() {
       {/* Hero */}
       <section className="flex flex-col items-center justify-center py-20 px-4">
         <h1 className="text-5xl font-bold text-center max-w-3xl">
-          Find the people already looking for your product.
+          Get your first 10 users by Sunday
         </h1>
         <p className="text-xl text-gray-400 mt-6 text-center max-w-2xl">
-          Paste your SaaS URL. We monitor Reddit, Twitter, LinkedIn, HN and the
-          entire web for buying intent signals. Get leads with contact info and
-          ready-to-send messages.
+          Paste your URL. We find people asking for tools like yours on
+          IndieHackers, HN, GitHub, Reddit, Twitter, and ProductHunt. You reply.
+          They sign up.
         </p>
         <div className="mt-8 flex gap-4">
           <a
