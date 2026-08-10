@@ -5,6 +5,13 @@ from .sources.hn import HNSourceManager
 from .sources.exa import ExaSourceManager
 from .sources.twitter import TwitterSourceManager
 from .sources.linkedin import LinkedInSourceManager
+from .sources.indiehackers import IndieHackersCollector
+from .sources.lobsters import LobstersCollector
+from .sources.devto import DevtoCollector
+from .sources.exa_reddit import ExaRedditCollector
+from .sources.exa_twitter import ExaTwitterCollector
+from .sources.exa_producthunt import ExaProductHuntCollector
+from .sources.exa_quora import ExaQuoraCollector
 from .merger import SignalMerger
 
 
@@ -30,6 +37,13 @@ class CollectorEngine:
             "exa": ExaSourceManager(),
             "twitter": TwitterSourceManager(),
             "linkedin": LinkedInSourceManager(),
+            "indiehackers": IndieHackersCollector(),
+            "lobsters": LobstersCollector(),
+            "devto": DevtoCollector(),
+            "exa_reddit": ExaRedditCollector(),
+            "exa_twitter": ExaTwitterCollector(),
+            "exa_producthunt": ExaProductHuntCollector(),
+            "exa_quora": ExaQuoraCollector(),
         }
         self.merger = SignalMerger()
 
