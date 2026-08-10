@@ -1,6 +1,7 @@
 """Exa Twitter collector - finds Twitter content via semantic search."""
 
 import os
+from datetime import datetime, timedelta
 from exa_py import Exa
 from .base import BaseSourceManager, Signal
 
@@ -26,7 +27,12 @@ class ExaTwitterCollector(BaseSourceManager):
 
         for query in queries:
             try:
-                results = self.exa.search(query, num_results=5, contents={"highlights": True})
+                results = self.exa.search(
+                    query,
+                    num_results=5,
+                    start_published_date=(datetime.now() - timedelta(hours=24)).isoformat(),
+                    contents={"highlights": True},
+                )
                 for result in results.results:
                     if "twitter.com" in result.url or "x.com" in result.url:
                         signals.append(Signal(

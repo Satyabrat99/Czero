@@ -49,7 +49,7 @@ class ExaSourceManager(BaseSourceManager):
                     query,
                     type="auto",
                     num_results=10,
-                    start_published_date=(datetime.now() - timedelta(days=7)).isoformat(),
+                    start_published_date=(datetime.now() - timedelta(hours=24)).isoformat(),
                     contents={"highlights": True}
                 )
 

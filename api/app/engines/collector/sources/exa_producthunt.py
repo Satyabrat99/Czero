@@ -1,6 +1,7 @@
 """Exa ProductHunt collector - finds ProductHunt discussions via semantic search."""
 
 import os
+from datetime import datetime, timedelta
 from exa_py import Exa
 from .base import BaseSourceManager, Signal
 
@@ -28,7 +29,12 @@ class ExaProductHuntCollector(BaseSourceManager):
 
         for query in queries:
             try:
-                results = self.exa.search(query, num_results=5, contents={"highlights": True})
+                results = self.exa.search(
+                    query,
+                    num_results=5,
+                    start_published_date=(datetime.now() - timedelta(hours=24)).isoformat(),
+                    contents={"highlights": True},
+                )
                 for result in results.results:
                     if "producthunt.com" in result.url:
                         signals.append(Signal(
