@@ -13,6 +13,15 @@ export default function Settings() {
   const [success, setSuccess] = useState('')
   const router = useRouter()
 
+  const suggestedKeywords = [
+    "looking for alternative to",
+    "anyone know good",
+    "recommend tool for",
+    "frustrated with",
+    "what do you use for",
+    "switching from",
+  ]
+
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -96,15 +105,36 @@ export default function Settings() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Keywords (comma separated)</label>
+            <label className="block text-sm font-medium mb-2">
+              Keywords (comma separated)
+            </label>
+            <p className="text-gray-500 text-xs mb-2">
+              Use buyer-intent phrases, not generic terms. Better keywords = better leads.
+            </p>
             <input
               type="text"
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
-              placeholder="lead generation, SaaS, indie hacker"
+              placeholder="looking for alternative to, anyone know good, recommend tool for"
               className="w-full p-3 bg-gray-900 border border-gray-700 rounded text-white"
               required
             />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {suggestedKeywords.map((kw) => (
+                <button
+                  key={kw}
+                  type="button"
+                  onClick={() => {
+                    if (!keywords.includes(kw)) {
+                      setKeywords(keywords ? `${keywords}, ${kw}` : kw)
+                    }
+                  }}
+                  className="text-xs bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded text-gray-400"
+                >
+                  + {kw}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>

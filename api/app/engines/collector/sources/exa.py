@@ -3,6 +3,22 @@ from exa_py import Exa
 from datetime import datetime, timedelta
 from .base import BaseSourceManager, Signal
 
+# Noise phrases to filter out
+NOISE_PHRASES = [
+    "synonyms", "thesaurus", "dictionary", "definition",
+    "insecticide", "pesticide", "chemical", "formula",
+    "football", "soccer", "united", "match",
+    "download", "play", "stream", "game",
+    "best practices", "guide to", "how to use",
+    "top 10", "list of", "tutorial", "documentation",
+]
+
+
+def is_noise(text: str) -> bool:
+    """Check if text is noise."""
+    text_lower = text.lower()
+    return any(phrase in text_lower for phrase in NOISE_PHRASES)
+
 
 class ExaSourceManager(BaseSourceManager):
     """
@@ -54,6 +70,12 @@ class ExaSourceManager(BaseSourceManager):
                 )
 
                 for result in results.results:
+                    text = result.text or result.title or ""
+
+                    # FILTER: Skip noise
+                    if is_noise(text):
+                        continue
+
                     source = self._detect_source(result.url)
 
                     signal = Signal(
