@@ -220,18 +220,18 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-dots">
       {/* Onboarding Container */}
-      <main className="flex-1 flex items-center justify-center p-6 sm:p-12">
-        <div className="max-w-2xl w-full bg-white border border-[#e0ebe6] rounded-2xl p-8 sm:p-12 relative my-8 shadow-[0_4px_25px_rgba(7,39,32,0.05)]">
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-xl w-full bg-white border border-[#e0ebe6] rounded-2xl p-6 sm:p-8 relative my-4 shadow-[0_4px_25px_rgba(7,39,32,0.05)]">
           
-          <div className="mb-8 border-b border-[#e0ebe6] pb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#fbf7e8] border border-[#d4af37]/40 rounded-full text-[10px] font-bold text-[#a88720] uppercase tracking-wider mb-2">
+          <div className="mb-6 border-b border-[#e0ebe6] pb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 bg-[#fbf7e8] border border-[#d4af37]/40 rounded-full text-[10px] font-bold text-[#a88720] uppercase tracking-wider mb-2">
               <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full gold-glow"></span>
               <span>Setup Workspace • Step {step} of 2</span>
             </div>
-            <h1 className="text-4xl font-display tracking-tight text-[#072720] mb-2 leading-[1.1]">
+            <h1 className="text-3xl sm:text-4xl font-display font-normal tracking-tight text-[#072720] mb-1 leading-[1.1]">
               {step === 1 ? "Product Scan Ingestion" : "Review Intent Context Profile"}
             </h1>
-            <p className="text-[#547067] text-sm leading-relaxed max-w-lg">
+            <p className="text-[#547067] text-xs leading-relaxed max-w-md">
               {step === 1 
                 ? "Enter your landing page URL. We'll automatically scan it to extract your product scope, ICP, and target subreddits." 
                 : "Review and edit the AI-generated product report below to align search queries before monitoring."

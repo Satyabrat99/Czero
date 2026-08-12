@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import RadarVisual from '@/components/RadarVisual'
+import { Flame, Zap, RotateCw, ArrowLeft, ExternalLink, ArrowRight, X, Radio } from 'lucide-react'
 
 interface Lead {
   source: string
@@ -217,7 +219,7 @@ export default function ProductDashboard() {
         {/* Navigation Breadcrumb */}
         <div className="mb-6">
           <Link href="/dashboard" className="text-xs font-mono text-[#547067] hover:text-[#072720] transition inline-flex items-center gap-1.5 group">
-            <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span>Workspaces</span>
           </Link>
         </div>
@@ -234,9 +236,10 @@ export default function ProductDashboard() {
                   href={productUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-xs text-[#547067] hover:text-[#072720] transition underline decoration-[#e0ebe6] underline-offset-4"
+                  className="font-mono text-xs text-[#547067] hover:text-[#072720] transition underline decoration-[#e0ebe6] underline-offset-4 inline-flex items-center gap-1"
                 >
-                  {productUrl.replace('https://', '').replace('http://', '').replace('www.', '')}
+                  <span>{productUrl.replace('https://', '').replace('http://', '').replace('www.', '')}</span>
+                  <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
@@ -259,7 +262,7 @@ export default function ProductDashboard() {
               ) : (
                 <>
                   <span>Trigger Radar Sweep</span>
-                  <span className="font-mono text-xs">⟳</span>
+                  <RotateCw className="w-3.5 h-3.5" />
                 </>
               )}
             </button>
@@ -272,13 +275,14 @@ export default function ProductDashboard() {
           </div>
         </div>
 
-        {/* 2. LIVE BACKGROUND MONITORING STATUS BAR (Bespoke Radar Card) */}
-        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-6 mb-8 shadow-[0_4px_24px_-4px_rgba(7,39,32,0.05)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all">
-          <div className="flex items-center gap-4">
-            <div className="relative flex items-center justify-center w-10 h-10 shrink-0">
-              <span className="absolute w-9 h-9 rounded-full bg-[#10b981]/20 animate-ping"></span>
-              <span className="w-3.5 h-3.5 bg-[#10b981] rounded-full relative z-10 radar-glow"></span>
+        {/* 2. LIVE BACKGROUND MONITORING STATUS BAR (Bespoke Half-Dome Sonar Radar Card) */}
+        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-5 mb-8 shadow-[0_4px_24px_-4px_rgba(7,39,32,0.05)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all overflow-hidden relative">
+          <div className="flex items-center gap-5">
+            {/* 180-Degree Animated Sonar Dome Radar Visual */}
+            <div className="shrink-0 -mb-2">
+              <RadarVisual size={50} variant="half" status={isScanning ? 'scanning' : 'active'} />
             </div>
+
             <div>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold text-[#072720] uppercase tracking-wider font-sans">
@@ -316,16 +320,18 @@ export default function ProductDashboard() {
         {scanResult && (
           <div className="bg-[#ebf2ee] border border-[#10b981]/40 text-[#072720] px-5 py-3.5 rounded-2xl text-xs font-semibold mb-6 flex justify-between items-center shadow-xs">
             <span>{scanResult}</span>
-            <button onClick={() => setScanResult('')} className="text-[#072720] hover:text-black font-bold ml-2">✕</button>
+            <button onClick={() => setScanResult('')} className="text-[#072720] hover:text-black font-bold ml-2">
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
 
         {/* Live Radar Sweep Ticker Card */}
         {isScanning && (
-          <div className="border border-[#10b981]/40 bg-[#ebf2ee]/60 rounded-2xl p-5 mb-8 flex items-center gap-4 animate-pulse shadow-sm">
-            <div className="relative flex items-center justify-center w-10 h-10 shrink-0">
-              <span className="absolute w-8 h-8 rounded-full border border-[#10b981] animate-ping"></span>
-              <span className="w-3.5 h-3.5 bg-[#10b981] rounded-full"></span>
+          <div className="border border-[#10b981]/40 bg-[#ebf2ee]/80 rounded-2xl p-4 mb-8 flex items-center gap-3.5 shadow-sm">
+            <div className="relative flex items-center justify-center w-8 h-8 shrink-0">
+              <span className="absolute w-7 h-7 rounded-full bg-[#10b981]/30 animate-ping"></span>
+              <span className="w-3 h-3 bg-[#10b981] rounded-full"></span>
             </div>
             <div>
               <div className="text-xs font-mono font-bold text-[#072720] uppercase tracking-wider">Radar Sweep Executing</div>
@@ -355,7 +361,8 @@ export default function ProductDashboard() {
                   : 'text-[#547067] hover:text-[#072720] font-medium'
               }`}
             >
-              <span>🔥 Hot Intent</span>
+              <Flame className="w-3.5 h-3.5 text-[#072720]" />
+              <span>Hot Intent</span>
               <span className={`px-2 py-0.2 rounded-full font-mono text-[10px] font-bold ${activeTab === 'hot' ? 'bg-[#072720]/15 text-[#072720]' : 'bg-[#fbf7e8] text-[#a88720]'}`}>
                 {hotLeads.length}
               </span>
@@ -368,7 +375,8 @@ export default function ProductDashboard() {
                   : 'text-[#547067] hover:text-[#072720] font-medium'
               }`}
             >
-              <span>⚡ Warm Leads</span>
+              <Zap className="w-3.5 h-3.5 text-[#10b981]" />
+              <span>Warm Leads</span>
               <span className={`px-2 py-0.2 rounded-full font-mono text-[10px] font-bold ${activeTab === 'warm' ? 'bg-white/20 text-white' : 'bg-[#ebf2ee] text-[#072720]'}`}>
                 {warmLeads.length}
               </span>
@@ -383,8 +391,8 @@ export default function ProductDashboard() {
         {/* 4. Bespoke Sleek Compact Leads Feed List */}
         {filteredLeads.length === 0 ? (
           <div className="bg-white border border-[#e0ebe6] rounded-2xl p-12 text-center shadow-xs">
-            <div className="relative flex items-center justify-center w-14 h-14 mx-auto mb-3 bg-[#ebf2ee] rounded-2xl text-[#d4af37] text-xl font-bold border border-[#d4af37]/40">
-              📡
+            <div className="relative flex items-center justify-center w-14 h-14 mx-auto mb-3 bg-[#ebf2ee] rounded-2xl border border-[#d4af37]/40">
+              <Radio className="w-7 h-7 text-[#d4af37]" />
             </div>
             <h3 className="text-2xl font-display text-[#072720] mb-2">No qualified leads in this view</h3>
             <p className="text-[#547067] text-xs max-w-sm mx-auto mb-5 leading-relaxed font-sans">
@@ -393,9 +401,10 @@ export default function ProductDashboard() {
             <button
               onClick={handleManualScan}
               disabled={isScanning}
-              className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-semibold px-5 py-2.5 rounded-full transition shadow-sm disabled:opacity-50"
+              className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-semibold px-5 py-2.5 rounded-full transition shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
             >
-              Trigger Radar Sweep ⟳
+              <span>Trigger Radar Sweep</span>
+              <RotateCw className="w-3.5 h-3.5" />
             </button>
           </div>
         ) : (
@@ -417,12 +426,24 @@ export default function ProductDashboard() {
                   {/* Sleek Top Header Meta Row with Inline Relevance Score */}
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider border shadow-xs ${
+                      <span className={`px-2.5 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider border shadow-xs inline-flex items-center gap-1 ${
                         lead.category === 'hot' ? 'bg-[#fffdf7] border-[#d4af37]/60 text-[#8c6b12]' :
                         lead.category === 'warm' ? 'bg-[#ebf2ee] border-[#10b981]/40 text-[#072720]' :
                         'bg-[#f4f7f5] border-[#e0ebe6] text-[#547067]'
                       }`}>
-                        {lead.category === 'hot' ? '🔥 Hot Intent' : lead.category === 'warm' ? '⚡ Warm Lead' : lead.category}
+                        {lead.category === 'hot' ? (
+                          <>
+                            <Flame className="w-3 h-3 text-[#d4af37]" />
+                            <span>Hot Intent</span>
+                          </>
+                        ) : lead.category === 'warm' ? (
+                          <>
+                            <Zap className="w-3 h-3 text-[#10b981]" />
+                            <span>Warm Lead</span>
+                          </>
+                        ) : (
+                          <span>{lead.category}</span>
+                        )}
                       </span>
                       
                       <span className="font-mono font-bold text-white capitalize bg-[#072720] border border-[#0d3c30] px-2 py-0.5 rounded-full text-[9.5px] inline-flex items-center gap-1 shadow-xs">
@@ -464,19 +485,19 @@ export default function ProductDashboard() {
                         href={lead.source_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1"
+                        className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
                       >
                         <span>Open Thread</span>
-                        <span className="text-[9px]">↗</span>
+                        <ExternalLink className="w-3 h-3 text-[#d4af37]" />
                       </a>
                     )}
 
                     <Link
                       href={`/dashboard/leads/${i}`}
-                      className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1"
+                      className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
                     >
                       <span>View AI Draft</span>
-                      <span>→</span>
+                      <ArrowRight className="w-3 h-3 text-[#072720]" />
                     </Link>
                   </div>
                 </div>

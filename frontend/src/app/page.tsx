@@ -3,6 +3,27 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import JellyfishCursorGlow from '@/components/JellyfishCursorGlow'
+import { 
+  Globe, 
+  Zap, 
+  Flame, 
+  ArrowRight, 
+  Radio, 
+  Search, 
+  Share2, 
+  Rss, 
+  MessageSquare, 
+  Cpu, 
+  Layers, 
+  ExternalLink,
+  Sparkles,
+  ShieldCheck,
+  Compass,
+  Code,
+  FileCode,
+  Briefcase
+} from 'lucide-react'
 
 export default function Home() {
   const [quickUrl, setQuickUrl] = useState('')
@@ -15,14 +36,17 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-pattern selection:bg-[#d4af37]/20 selection:text-[#072720] relative">
+    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-dots selection:bg-[#d4af37]/20 selection:text-[#072720] relative overflow-x-hidden">
+      
+      {/* Interactive Jellyfish Cursor Glow Mesh Background */}
+      <JellyfishCursorGlow />
       
       {/* 1. Executive Top Navbar */}
       <header className="sticky top-0 z-50 bg-[#f4f7f5]/90 backdrop-blur-md border-b border-[#e0ebe6] transition-all">
         <div className="max-w-[1240px] mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-3xl font-display font-extrabold text-[#072720] tracking-tight group-hover:scale-105 transition-transform">czero</span>
+              <span className="text-3xl font-display font-normal text-[#072720] tracking-tight group-hover:scale-105 transition-transform">czero</span>
               <span className="bg-[#fbf7e8] border border-[#d4af37]/60 text-[#a88720] text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full gold-glow">
                 PRO
               </span>
@@ -48,7 +72,7 @@ export default function Home() {
               className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-bold px-5 py-2.5 rounded-full transition shadow-sm hover:shadow-md inline-flex items-center gap-1.5 group"
             >
               <span>Launch Free Scan</span>
-              <span className="text-sm group-hover:translate-x-0.5 transition-transform">→</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
         </div>
@@ -60,10 +84,9 @@ export default function Home() {
         {/* Concentric Radar Wave Ring Pattern Background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] border border-[#d4af37]/15 rounded-full -z-10 pointer-events-none animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-[#072720]/10 rounded-full -z-10 pointer-events-none"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-gradient-to-tr from-[#d4af37]/15 via-transparent to-[#10b981]/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
-        {/* Floating Signal Widget Left */}
-        <div className="hidden lg:flex absolute left-4 top-36 bg-white/95 backdrop-blur-md border border-[#072720]/15 p-3.5 rounded-2xl shadow-xl animate-float-slow flex-col items-start gap-1 w-48 text-left z-10">
+        {/* Floating Signal Widget Left - Positioned high in left margin */}
+        <div className="hidden lg:flex absolute left-0 xl:-left-12 2xl:-left-16 top-2 bg-white/95 backdrop-blur-md border border-[#072720]/15 p-3 rounded-2xl shadow-xl animate-float-slow flex-col items-start gap-1 w-44 text-left z-10">
           <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#10b981] uppercase tracking-wider">
             <span className="w-2 h-2 bg-[#10b981] rounded-full animate-ping"></span>
             <span>Live Signal</span>
@@ -72,8 +95,8 @@ export default function Home() {
           <div className="text-[10px] font-mono text-[#a88720] font-bold">r/SaaS • 98% Match</div>
         </div>
 
-        {/* Floating Signal Widget Right */}
-        <div className="hidden lg:flex absolute right-4 top-40 bg-[#fffdf7]/95 backdrop-blur-md border border-[#d4af37]/60 p-3.5 rounded-2xl shadow-xl animate-float-reverse flex-col items-start gap-1 w-52 text-left z-10">
+        {/* Floating Signal Widget Right - Staggered lower in right margin */}
+        <div className="hidden lg:flex absolute right-0 xl:-right-12 2xl:-right-16 top-44 xl:top-48 bg-[#fffdf7]/95 backdrop-blur-md border border-[#d4af37]/60 p-3 rounded-2xl shadow-xl animate-float-reverse flex-col items-start gap-1 w-48 text-left z-10">
           <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#a88720] uppercase tracking-wider">
             <span className="w-2 h-2 bg-[#d4af37] rounded-full gold-glow"></span>
             <span>Verified Lead</span>
@@ -83,7 +106,7 @@ export default function Home() {
         </div>
 
         {/* Eyebrow Pill Badge */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#fbf7e8] border border-[#d4af37]/60 rounded-full text-[11px] font-bold text-[#a88720] uppercase tracking-wider mb-8 shadow-xs">
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#fbf7e8] border border-[#d4af37]/60 rounded-full text-[11px] font-bold text-[#a88720] uppercase tracking-wider mb-6 shadow-xs">
           <span className="relative flex items-center justify-center w-2 h-2">
             <span className="absolute w-3 h-3 bg-[#10b981] rounded-full animate-ping opacity-75"></span>
             <span className="w-2 h-2 bg-[#10b981] rounded-full"></span>
@@ -91,18 +114,20 @@ export default function Home() {
           <span>AUTONOMOUS B2B INTENT RADAR • 12 FEEDS MONITORED</span>
         </div>
 
-        {/* Hero Title with Enhanced Typography */}
-        <h1 className="text-5xl sm:text-7xl md:text-8xl font-display font-extrabold tracking-tight text-[#072720] max-w-5xl mx-auto leading-[1.04] mb-6">
-          Get your first <span className="relative inline-block text-[#927218]">10 paying users<span className="absolute bottom-2 left-0 right-0 h-4 bg-[#d4af37]/35 -z-10 rounded-sm"></span></span> by Sunday.
+        {/* Balanced & Optimized Hero Title */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-normal tracking-tight text-[#072720] max-w-3xl mx-auto leading-[1.12] mb-5">
+          Get your first <span className="relative inline-block text-[#927218]">10 paying users<span className="absolute bottom-1 left-0 right-0 h-3 bg-[#d4af37]/35 -z-10 rounded-sm"></span></span> by Sunday.
         </h1>
 
-        <p className="text-[#547067] text-base sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-sans font-medium">
-          Paste your SaaS URL. Czero continuously monitors 12 multichannel feeds every 15 minutes, filters out promoter spam, and delivers qualified buyer leads with ready-to-send AI outreach drafts.
+        <p className="text-[#547067] text-sm sm:text-base max-w-lg mx-auto leading-relaxed mb-8 font-sans font-medium">
+          Turn social discussions into qualified buyer leads. Czero monitors 12 channels 24/7, filters out promoter spam, and drafts high-converting AI outreach.
         </p>
 
         {/* Enhanced Quick URL Scanner Form Box */}
         <form onSubmit={handleQuickScan} className="max-w-xl mx-auto bg-white border-2 border-[#072720]/20 p-2.5 rounded-full shadow-[0_16px_50px_rgba(7,39,32,0.12)] hover:border-[#072720] transition-all flex items-center gap-2 mb-8">
-          <div className="pl-4 text-lg">🌐</div>
+          <div className="pl-4 text-[#d4af37]">
+            <Globe className="w-5 h-5" />
+          </div>
           <input
             type="url"
             value={quickUrl}
@@ -116,17 +141,23 @@ export default function Home() {
             className="bg-[#072720] hover:bg-[#0d3c30] text-white font-bold text-xs px-7 py-3.5 rounded-full transition shadow-md hover:shadow-lg whitespace-nowrap inline-flex items-center gap-2 group"
           >
             <span>Scan My Product</span>
-            <span className="text-sm text-[#d4af37] group-hover:translate-x-1 transition-transform">→</span>
+            <ArrowRight className="w-4 h-4 text-[#d4af37] group-hover:translate-x-1 transition-transform" />
           </button>
         </form>
 
-        <p className="text-xs text-[#547067] font-mono font-semibold flex items-center justify-center gap-2">
-          <span>⚡ Free Instant Analysis</span>
+        <div className="text-xs text-[#547067] font-mono font-semibold flex flex-wrap items-center justify-center gap-3">
+          <span className="inline-flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-[#d4af37]" /> Instant Analysis
+          </span>
           <span>•</span>
-          <span>No Credit Card Required</span>
+          <span className="inline-flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" /> No Credit Card Required
+          </span>
           <span>•</span>
-          <span>Scans Reddit, HN, Exa Web, Twitter & LinkedIn</span>
-        </p>
+          <span className="inline-flex items-center gap-1.5">
+            <Radio className="w-3.5 h-3.5 text-[#072720]" /> Scans Reddit, HN, Exa Web & Twitter
+          </span>
+        </div>
       </section>
 
       {/* 3. Multichannel Feeds Monitored Pattern Bar */}
@@ -137,25 +168,28 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
             {[
-              { name: 'Reddit RSS', icon: '🔴' },
-              { name: 'Hacker News (Algolia)', icon: '🟠' },
-              { name: 'Lobste.rs', icon: '🦞' },
-              { name: 'Dev.to Tech', icon: '👩‍💻' },
-              { name: 'Exa Web (24h)', icon: '🌐' },
-              { name: 'Exa Twitter/X', icon: '🐦' },
-              { name: 'Exa LinkedIn', icon: '💼' },
-              { name: 'ProductHunt', icon: '🐱' },
-              { name: 'IndieHackers', icon: '🚀' },
-              { name: 'Quora Q&A', icon: '❓' }
-            ].map((source, i) => (
-              <div
-                key={i}
-                className="bg-[#f4f7f5] border border-[#e0ebe6] hover:border-[#072720]/30 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold text-[#072720] flex items-center gap-2 transition hover:-translate-y-0.5 shadow-xs"
-              >
-                <span>{source.icon}</span>
-                <span>{source.name}</span>
-              </div>
-            ))}
+              { name: 'Reddit RSS', icon: Radio, color: 'text-red-500' },
+              { name: 'Hacker News', icon: Code, color: 'text-amber-500' },
+              { name: 'Lobste.rs', icon: Compass, color: 'text-rose-500' },
+              { name: 'Dev.to Tech', icon: FileCode, color: 'text-emerald-600' },
+              { name: 'Exa Web (24h)', icon: Globe, color: 'text-[#d4af37]' },
+              { name: 'Exa Twitter/X', icon: Share2, color: 'text-sky-500' },
+              { name: 'Exa LinkedIn', icon: Briefcase, color: 'text-blue-600' },
+              { name: 'ProductHunt', icon: Sparkles, color: 'text-orange-500' },
+              { name: 'IndieHackers', icon: Zap, color: 'text-emerald-500' },
+              { name: 'Quora Q&A', icon: MessageSquare, color: 'text-red-600' }
+            ].map((source, i) => {
+              const IconComp = source.icon
+              return (
+                <div
+                  key={i}
+                  className="bg-[#f4f7f5] border border-[#e0ebe6] hover:border-[#072720]/30 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold text-[#072720] flex items-center gap-2 transition hover:-translate-y-0.5 shadow-xs"
+                >
+                  <IconComp className={`w-3.5 h-3.5 ${source.color}`} />
+                  <span>{source.name}</span>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -167,56 +201,80 @@ export default function Home() {
             <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
               REAL-TIME SIGNAL INTELLIGENCE
             </div>
-            <h2 className="text-4xl sm:text-5xl font-display font-extrabold text-[#072720] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#072720] tracking-tight">
               See How Czero Captures High-Intent Buyers
             </h2>
           </div>
 
-          {/* Sample Sleek Card Mockup */}
-          <div className="max-w-3xl mx-auto bg-white border border-[#072720]/20 rounded-2xl p-6 shadow-[0_8px_30px_-6px_rgba(7,39,32,0.08)] hover:shadow-[0_12px_40px_-6px_rgba(7,39,32,0.14)] transition-all relative overflow-hidden">
-            <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-gradient-to-b from-[#d4af37] via-[#c5a059] to-[#072720]"></div>
-            
-            <div className="pl-2 space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="bg-[#fffdf7] border border-[#d4af37]/60 text-[#8c6b12] px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                    🔥 Hot Intent
-                  </span>
-                  <span className="bg-[#072720] text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold capitalize">
-                    r/SaaS
-                  </span>
-                  <span className="text-xs font-mono text-[#547067]">by @dev_founder_99</span>
+          {/* 3 Ultra-Clean Minimal Showcase Demo Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                source: 'r/SaaS',
+                author: 'dev_founder_99',
+                score: 98,
+                text: 'Does anyone know an automated tool to scrape buyer intent keywords across Reddit and Twitter? Trying to find early adopters for my B2B SaaS.',
+                intent: 'Searching for automated B2B buyer intent tracking'
+              },
+              {
+                source: 'Hacker News',
+                author: 'tech_lead_alex',
+                score: 95,
+                text: 'Ask HN: How do you track software intent signals on tech forums without spending 4 hours doing manual searches every day?',
+                intent: 'Seeking automated software intent monitoring'
+              },
+              {
+                source: 'Lobste.rs',
+                author: 'growth_hacker',
+                score: 91,
+                text: 'Looking for a lightweight social listening tool specifically built for B2B buyer queries. Any open recommendations?',
+                intent: 'Active query requesting B2B social listening'
+              }
+            ].map((card, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-[#072720]/10 hover:border-[#072720]/30 rounded-2xl p-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+              >
+                <div className="space-y-3">
+                  {/* Clean Top Meta */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-white bg-[#072720] px-2.5 py-0.5 rounded-full text-[10px]">
+                        {card.source}
+                      </span>
+                      <span className="text-xs font-mono text-[#547067]">
+                        @{card.author}
+                      </span>
+                    </div>
+
+                    <span className="text-xs font-mono font-bold text-[#8c6b12] bg-[#fbf7e8] border border-[#d4af37]/50 px-2.5 py-0.5 rounded-full">
+                      {card.score}% Match
+                    </span>
+                  </div>
+
+                  {/* Clean Post Text */}
+                  <p className="text-[#072720] text-xs sm:text-[13px] leading-relaxed font-medium">
+                    &quot;{card.text}&quot;
+                  </p>
                 </div>
-                <div className="bg-gradient-to-r from-[#fffdf7] to-[#f7eee0] border border-[#d4af37]/60 px-3 py-0.5 rounded-full font-mono text-xs font-bold text-[#927218] flex items-center gap-1 shadow-xs">
-                  <span>95%</span>
-                  <span className="text-[9px] uppercase tracking-wider">Match</span>
+
+                {/* Bottom 1-Line AI Intent & Link */}
+                <div className="pt-3 mt-3 border-t border-[#e0ebe6] space-y-2">
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#547067] font-medium">
+                    <Sparkles className="w-3.5 h-3.5 text-[#d4af37] shrink-0" />
+                    <span className="line-clamp-1">{card.intent}</span>
+                  </div>
+
+                  <Link
+                    href="/auth/login"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[#072720] group-hover:text-[#a88720] transition-colors"
+                  >
+                    <span>View AI Reply Draft</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#d4af37] group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </div>
-
-              <p className="text-[#061d18] text-[15px] leading-relaxed font-semibold">
-                &quot;Does anyone know an automated tool to scrape buyer intent keywords across Reddit and Twitter? I&apos;m trying to find early adopters for my B2B SaaS.&quot;
-              </p>
-
-              <div className="bg-[#f0f6f3] border-l-3 border-l-[#d4af37] px-3.5 py-2 rounded-r-xl text-xs text-[#0a3328] font-medium leading-normal flex items-baseline gap-2">
-                <span className="font-bold text-[#072720] uppercase tracking-wider text-[10px] shrink-0 font-sans">
-                  AI Intent Reasoning:
-                </span>
-                <span className="font-sans">
-                  The author is explicitly asking for a solution to automate B2B buyer intent tracking, which matches your core product offering 100%.
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 pt-1">
-                <button className="bg-[#072720] text-white text-xs font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-1">
-                  <span>Open Thread</span>
-                  <span className="text-[10px]">↗</span>
-                </button>
-                <button className="bg-white border border-[#e0ebe6] text-[#072720] text-xs font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-1">
-                  <span>View AI Draft</span>
-                  <span>→</span>
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -227,7 +285,7 @@ export default function Home() {
           <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
             WHY FOUNDERS CHOOSE CZERO
           </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-extrabold text-[#072720] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#072720] tracking-tight">
             Built Specifically for B2B Early-Stage Founders
           </h2>
         </div>
@@ -235,44 +293,47 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              icon: '📡',
+              icon: Radio,
               title: '12 Multichannel Feeds',
               desc: 'Monitors Reddit, Hacker News, Lobste.rs, Dev.to, Exa Web (24h), Twitter, LinkedIn, and IndieHackers in parallel.'
             },
             {
-              icon: '🛡️',
+              icon: ShieldCheck,
               title: 'Agency & Spam Pre-Filter',
               desc: 'Automatically filters out agency ads ("SEEKING WORK"), job listings, and resumes to score 0 before calling LLM.'
             },
             {
-              icon: '⚡',
+              icon: Zap,
               title: '15-Min Background Radar',
               desc: 'Autonomous background scheduling loop sweeps social feeds continuously, saving persistent search state.'
             },
             {
-              icon: '🧠',
+              icon: Cpu,
               title: 'NVIDIA NIM Llama 3.1 8B',
               desc: 'Evaluates commercial buying intent vs builder noise using mini-batched prompts to eliminate hallucinations.'
             },
             {
-              icon: '✍️',
+              icon: Sparkles,
               title: '1-Click AI Reply Composer',
               desc: 'Generates non-spammy, empathetic responses tailored to the lead\'s specific complaint or request.'
             },
             {
-              icon: '🔍',
+              icon: Search,
               title: 'Vision & Text URL Ingestion',
               desc: 'Just paste your landing page URL. Vision & LLM engines automatically extract your ICP, USPs, and subreddits.'
             }
-          ].map((item, i) => (
-            <div key={i} className="bg-white border border-[#e0ebe6] p-8 rounded-2xl shadow-xs hover:shadow-lg hover:-translate-y-1 hover:border-[#072720]/30 transition-all duration-300 group">
-              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform w-12 h-12 flex items-center justify-center bg-[#ebf2ee] rounded-xl border border-[#d4af37]/30">
-                {item.icon}
+          ].map((item, i) => {
+            const ItemIcon = item.icon
+            return (
+              <div key={i} className="bg-white border border-[#e0ebe6] p-8 rounded-2xl shadow-xs hover:shadow-lg hover:-translate-y-1 hover:border-[#072720]/30 transition-all duration-300 group">
+                <div className="mb-4 group-hover:scale-110 transition-transform w-12 h-12 flex items-center justify-center bg-[#ebf2ee] rounded-xl border border-[#d4af37]/30 text-[#072720]">
+                  <ItemIcon className="w-6 h-6 text-[#072720]" />
+                </div>
+                <h3 className="text-xl font-display font-normal text-[#072720] mb-2">{item.title}</h3>
+                <p className="text-xs text-[#547067] leading-relaxed font-medium">{item.desc}</p>
               </div>
-              <h3 className="text-lg font-bold text-[#072720] mb-2">{item.title}</h3>
-              <p className="text-xs text-[#547067] leading-relaxed font-medium">{item.desc}</p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
@@ -283,7 +344,7 @@ export default function Home() {
             <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
               SIMPLE 3-STEP PIPELINE
             </div>
-            <h2 className="text-4xl sm:text-5xl font-display font-extrabold text-[#072720] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#072720] tracking-tight">
               From Product URL to First Paying Customer
             </h2>
           </div>
@@ -310,7 +371,7 @@ export default function Home() {
                 <div className="text-4xl font-mono font-extrabold text-[#d4af37] mb-4">
                   {step.step}
                 </div>
-                <h3 className="text-lg font-bold text-[#072720] mb-2">{step.title}</h3>
+                <h3 className="text-xl font-display font-normal text-[#072720] mb-2">{step.title}</h3>
                 <p className="text-xs text-[#547067] leading-relaxed font-medium">{step.desc}</p>
               </div>
             ))}
@@ -324,7 +385,7 @@ export default function Home() {
           <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
             TRANSPARENT PRICING
           </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-extrabold text-[#072720] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#072720] tracking-tight">
             Start Free • Upgrade as You Scale
           </h2>
         </div>
@@ -375,11 +436,11 @@ export default function Home() {
                 </div>
               )}
               <div>
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <h3 className="text-2xl font-display font-normal mb-1">{plan.name}</h3>
                 <p className={`text-xs mb-6 ${plan.popular ? 'text-white/70' : 'text-[#547067]'}`}>{plan.desc}</p>
 
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-display font-extrabold">{plan.price}</span>
+                  <span className="text-4xl font-display font-normal">{plan.price}</span>
                   {plan.period && <span className={`text-xs ${plan.popular ? 'text-white/70' : 'text-[#547067]'}`}>{plan.period}</span>}
                 </div>
 
@@ -412,7 +473,7 @@ export default function Home() {
       <footer className="py-12 border-t border-[#e0ebe6] bg-white px-6">
         <div className="max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-[#547067]">
           <div className="flex items-center gap-2">
-            <span className="font-display font-bold text-[#072720] text-base">czero</span>
+            <span className="font-display font-normal text-[#072720] text-xl">czero</span>
             <span>— Intent-Based B2B Lead Generation Radar</span>
           </div>
           <p>© {new Date().getFullYear()} Czero. All rights reserved.</p>

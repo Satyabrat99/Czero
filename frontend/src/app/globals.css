@@ -135,3 +135,45 @@
 .animate-float-reverse {
   animation: floatReverse 7s ease-in-out infinite;
 }
+
+/* Radar Sweep Keyframe Animations */
+@keyframes radarSweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-radar-sweep {
+  animation: radarSweep 4s linear infinite;
+  transform-origin: center;
+}
+
+.animate-radar-sweep-fast {
+  animation: radarSweep 1.8s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes blipPulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.75); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+.animate-blip {
+  animation: blipPulse 2.2s ease-in-out infinite;
+}
+
+/* 180-Degree Half-Dome Sonar Sweep Animations */
+@keyframes radarSweepHalf {
+  0% { transform: rotate(-90deg); }
+  50% { transform: rotate(90deg); }
+  100% { transform: rotate(-90deg); }
+}
+
+.animate-radar-sweep-half {
+  animation: radarSweepHalf 3.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-radar-sweep-half-fast {
+  animation: radarSweepHalf 1.6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
