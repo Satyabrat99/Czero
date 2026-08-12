@@ -20,18 +20,22 @@ interface Lead {
 const sanitizeText = (rawText: string): string => {
   if (!rawText) return ''
   let cleaned = rawText
-    .replace(/&#x2F;/g, '/')
-    .replace(/&#x2f;/g, '/')
+    // Remove unclosed or raw HTML tags
+    .replace(/<a\b[^>]*>/gi, ' ')
+    .replace(/<\/a>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    // Unescape hex and decimal HTML entities
+    .replace(/&#x([0-9a-fA-F]+);?/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#([0-9]+);?/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
-    .replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, ' ')
 
-  // Strip raw HTML tags
-  cleaned = cleaned.replace(/<[^>]+>/g, ' ')
+  // Strip trailing broken angle brackets or URL parameters in text
+  cleaned = cleaned.replace(/<[^>]*$/g, '')
   // Normalize whitespace
   return cleaned.replace(/\s+/g, ' ').trim()
 }
@@ -245,7 +249,7 @@ export default function ProductDashboard() {
             <button
               onClick={handleManualScan}
               disabled={isScanning}
-              className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-xs px-5 py-3 rounded-full transition shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
+              className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-xs px-6 py-3 rounded-full transition shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
             >
               {isScanning ? (
                 <>
@@ -261,7 +265,7 @@ export default function ProductDashboard() {
             </button>
             <Link
               href="/dashboard/settings"
-              className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-xs px-4 py-3 rounded-full transition shadow-sm"
+              className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-xs px-5 py-3 rounded-full transition shadow-sm"
             >
               Settings
             </Link>
@@ -269,40 +273,40 @@ export default function ProductDashboard() {
         </div>
 
         {/* 2. LIVE BACKGROUND MONITORING STATUS BAR (Bespoke Radar Card) */}
-        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-5 mb-8 shadow-[0_4px_20px_-4px_rgba(7,39,32,0.04)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all">
+        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-6 mb-8 shadow-[0_4px_24px_-4px_rgba(7,39,32,0.05)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all">
           <div className="flex items-center gap-4">
-            <div className="relative flex items-center justify-center w-9 h-9 shrink-0">
-              <span className="absolute w-8 h-8 rounded-full bg-[#10b981]/20 animate-ping"></span>
+            <div className="relative flex items-center justify-center w-10 h-10 shrink-0">
+              <span className="absolute w-9 h-9 rounded-full bg-[#10b981]/20 animate-ping"></span>
               <span className="w-3.5 h-3.5 bg-[#10b981] rounded-full relative z-10 radar-glow"></span>
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 <span className="text-xs font-bold text-[#072720] uppercase tracking-wider font-sans">
-                  Background Radar Stream Active
+                  BACKGROUND RADAR STREAM ACTIVE
                 </span>
-                <span className="bg-[#fbf7e8] border border-[#d4af37]/40 text-[#a88720] text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full">
+                <span className="bg-[#fbf7e8] border border-[#d4af37]/50 text-[#a88720] text-[10px] font-mono font-bold px-3 py-0.5 rounded-full shadow-xs">
                   15m Interval
                 </span>
               </div>
-              <p className="text-xs text-[#547067] mt-1 font-sans">
-                Scanning 9 feeds every 15 minutes • Last auto-sweep: <span className="font-mono font-semibold text-[#072720]">{lastChecked}</span>
+              <p className="text-xs text-[#547067] mt-1 font-sans font-medium">
+                Scanning 9 feeds every 15 minutes • Last auto-sweep: <span className="font-mono font-bold text-[#072720]">{lastChecked}</span>
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-6 border-t sm:border-t-0 border-[#e0ebe6] pt-3 sm:pt-0 w-full sm:w-auto justify-between sm:justify-end">
             <div className="text-right">
-              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">Next Auto-Sweep</div>
-              <div className="text-sm font-mono font-bold text-[#072720] bg-[#ebf2ee] border border-[#e0ebe6] px-3 py-0.5 rounded-full mt-0.5 inline-block">
+              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">NEXT AUTO-SWEEP</div>
+              <div className="text-sm font-mono font-extrabold text-[#072720] bg-[#f4f7f5] border border-[#e0ebe6] px-3.5 py-0.5 rounded-full mt-0.5 inline-block shadow-xs">
                 {formatCountdown(countdown)}
               </div>
             </div>
             <div className="w-px h-8 bg-[#e0ebe6] hidden sm:block"></div>
             <div className="text-right">
-              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">Radar Status</div>
-              <div className="text-xs font-semibold text-[#10b981] flex items-center gap-1.5 mt-0.5">
+              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">RADAR STATUS</div>
+              <div className="text-xs font-bold text-[#10b981] flex items-center gap-1.5 mt-0.5">
                 <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse"></span>
-                <span className="font-mono uppercase text-[11px] tracking-wider">Listening</span>
+                <span className="font-mono uppercase text-[11px] tracking-wider">LISTENING</span>
               </div>
             </div>
           </div>
@@ -310,7 +314,7 @@ export default function ProductDashboard() {
 
         {/* Notice Banner */}
         {scanResult && (
-          <div className="bg-[#ebf2ee] border border-[#10b981]/40 text-[#072720] px-4 py-3 rounded-xl text-xs font-semibold mb-6 flex justify-between items-center shadow-xs">
+          <div className="bg-[#ebf2ee] border border-[#10b981]/40 text-[#072720] px-5 py-3.5 rounded-2xl text-xs font-semibold mb-6 flex justify-between items-center shadow-xs">
             <span>{scanResult}</span>
             <button onClick={() => setScanResult('')} className="text-[#072720] hover:text-black font-bold ml-2">✕</button>
           </div>
@@ -332,40 +336,40 @@ export default function ProductDashboard() {
 
         {/* 3. Category Filter Tabs */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-1.5 bg-white border border-[#e0ebe6] p-1.5 rounded-full shadow-xs shrink-0">
+          <div className="flex items-center gap-2 bg-white border border-[#e0ebe6] p-1.5 rounded-full shadow-xs shrink-0">
             <button
               onClick={() => setActiveTab('all')}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+              className={`px-4 py-2 rounded-full text-xs transition-all duration-200 ${
                 activeTab === 'all'
-                  ? 'bg-[#072720] text-white shadow-sm font-semibold'
-                  : 'text-[#547067] hover:text-[#072720]'
+                  ? 'bg-[#072720] text-white shadow-sm font-bold'
+                  : 'text-[#547067] hover:text-[#072720] font-medium'
               }`}
             >
               All Matches ({leads.length})
             </button>
             <button
               onClick={() => setActiveTab('hot')}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-full text-xs transition-all duration-200 flex items-center gap-1.5 ${
                 activeTab === 'hot'
-                  ? 'bg-[#d4af37] text-[#072720] shadow-sm font-bold'
-                  : 'text-[#547067] hover:text-[#072720]'
+                  ? 'bg-[#d4af37] text-[#072720] shadow-sm font-extrabold'
+                  : 'text-[#547067] hover:text-[#072720] font-medium'
               }`}
             >
               <span>🔥 Hot Intent</span>
-              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'hot' ? 'bg-[#072720]/15 text-[#072720]' : 'bg-[#fbf7e8] text-[#a88720]'}`}>
+              <span className={`px-2 py-0.2 rounded-full font-mono text-[10px] font-bold ${activeTab === 'hot' ? 'bg-[#072720]/15 text-[#072720]' : 'bg-[#fbf7e8] text-[#a88720]'}`}>
                 {hotLeads.length}
               </span>
             </button>
             <button
               onClick={() => setActiveTab('warm')}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
+              className={`px-4 py-2 rounded-full text-xs transition-all duration-200 flex items-center gap-1.5 ${
                 activeTab === 'warm'
-                  ? 'bg-[#0e4438] text-white shadow-sm font-semibold'
-                  : 'text-[#547067] hover:text-[#072720]'
+                  ? 'bg-[#0e4438] text-white shadow-sm font-bold'
+                  : 'text-[#547067] hover:text-[#072720] font-medium'
               }`}
             >
               <span>⚡ Warm Leads</span>
-              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'warm' ? 'bg-white/20 text-white' : 'bg-[#ebf2ee] text-[#072720]'}`}>
+              <span className={`px-2 py-0.2 rounded-full font-mono text-[10px] font-bold ${activeTab === 'warm' ? 'bg-white/20 text-white' : 'bg-[#ebf2ee] text-[#072720]'}`}>
                 {warmLeads.length}
               </span>
             </button>
@@ -395,72 +399,76 @@ export default function ProductDashboard() {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {filteredLeads.map((lead, i) => (
               <div
                 key={i}
-                className="bg-white border border-[#e0ebe6] hover:border-[#072720]/40 rounded-2xl p-6 transition-all duration-200 shadow-[0_2px_12px_-2px_rgba(7,39,32,0.04)] relative overflow-hidden group"
+                className="bg-white border border-[#072720]/15 hover:border-[#072720]/40 rounded-2xl p-7 transition-all duration-300 shadow-[0_4px_24px_-4px_rgba(7,39,32,0.06)] hover:shadow-[0_8px_32px_-4px_rgba(7,39,32,0.12)] relative overflow-hidden group"
               >
                 {/* Left score accent strip */}
                 <div
                   className={`absolute top-0 left-0 bottom-0 w-1.5 ${
-                    lead.category === 'hot' ? 'bg-[#d4af37]' :
-                    lead.category === 'warm' ? 'bg-[#10b981]' : 'bg-[#e0ebe6]'
+                    lead.category === 'hot' ? 'bg-gradient-to-b from-[#d4af37] via-[#c5a059] to-[#072720]' :
+                    lead.category === 'warm' ? 'bg-gradient-to-b from-[#10b981] to-[#072720]' : 'bg-[#e0ebe6]'
                   }`}
                 ></div>
 
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 pl-2">
-                  <div className="flex-1 space-y-3.5">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 pl-2">
+                  <div className="flex-1 space-y-4">
+                    
                     {/* Meta Row */}
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                        lead.category === 'hot' ? 'bg-[#fbf7e8] border-[#d4af37]/50 text-[#a88720]' :
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-xs ${
+                        lead.category === 'hot' ? 'bg-[#fffdf7] border-[#d4af37]/60 text-[#8c6b12]' :
                         lead.category === 'warm' ? 'bg-[#ebf2ee] border-[#10b981]/40 text-[#072720]' :
                         'bg-[#f4f7f5] border-[#e0ebe6] text-[#547067]'
                       }`}>
                         {lead.category === 'hot' ? '🔥 Hot Buyer Intent' : lead.category === 'warm' ? '⚡ Warm Lead' : lead.category}
                       </span>
                       
-                      <span className="font-mono font-semibold text-[#072720] capitalize border border-[#e0ebe6] bg-[#f4f7f5] px-2.5 py-0.5 rounded-full text-[11px] inline-flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#072720]/40 rounded-full"></span>
+                      <span className="font-mono font-bold text-white capitalize bg-[#072720] border border-[#0d3c30] px-3 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1.5 shadow-xs">
+                        <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full"></span>
                         {lead.source}
                       </span>
 
                       {lead.author_username && lead.author_username !== 'unknown' && (
-                        <span className="font-mono text-[11px] text-[#547067]">by @{lead.author_username}</span>
+                        <span className="font-mono text-xs font-semibold text-[#547067]">by @{lead.author_username}</span>
                       )}
                     </div>
 
-                    {/* Post Text */}
-                    <p className="text-[#072720] text-[14.5px] leading-relaxed font-sans font-medium pr-4">
+                    {/* Post Text - High Contrast Deep Charcoal */}
+                    <p className="text-[#061d18] text-[15px] sm:text-[16px] leading-[1.6] font-sans font-semibold tracking-tight pr-2">
                       "{lead.text}"
                     </p>
 
-                    {/* AI Intent Intelligence Box */}
-                    <div className="bg-[#f4f7f5] border-l-2 border-[#d4af37] p-3.5 rounded-r-xl text-xs text-[#547067] leading-relaxed flex items-start gap-2">
-                      <div>
-                        <span className="font-bold text-[#072720] font-sans mr-1">AI Intent Score Reason:</span>
-                        {lead.reasoning}
+                    {/* AI Intent Intelligence Box - Executive Deep Forest Container */}
+                    <div className="bg-[#f0f6f3] border border-[#145343]/20 border-l-4 border-l-[#d4af37] p-4 rounded-xl text-xs text-[#0a3328] leading-relaxed shadow-xs space-y-1">
+                      <div className="font-bold text-[#072720] uppercase tracking-wider text-[11px] font-sans flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full"></span>
+                        <span>AI Intent Reasoning</span>
                       </div>
+                      <p className="font-medium text-[13.5px] leading-relaxed font-sans text-[#0a3328]">
+                        {lead.reasoning}
+                      </p>
                     </div>
 
                     {/* Actions Row */}
-                    <div className="flex items-center gap-5 pt-1 text-xs">
+                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
                       {lead.source_url && (
                         <a
                           href={lead.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-semibold text-[#072720] hover:text-[#d4af37] transition inline-flex items-center gap-1 group/link"
+                          className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-xs px-4 py-2 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
                         >
                           <span>Open Original Thread</span>
-                          <span className="text-[10px] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform">↗</span>
+                          <span className="text-[10px]">↗</span>
                         </a>
                       )}
 
                       <Link
                         href={`/dashboard/leads/${i}`}
-                        className="text-[#547067] hover:text-[#072720] font-medium transition inline-flex items-center gap-1"
+                        className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-xs px-4 py-2 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
                       >
                         <span>View AI Reply Draft</span>
                         <span>→</span>
@@ -468,12 +476,12 @@ export default function ProductDashboard() {
                     </div>
                   </div>
 
-                  {/* Relevance Score Pill Right */}
+                  {/* Executive Metallic Gold Relevance Score Pill Right */}
                   <div className="flex items-center md:flex-col md:items-end justify-between border-t md:border-t-0 border-[#e0ebe6] pt-3 md:pt-0 shrink-0">
-                    <div className="bg-[#fbf7e8] border border-[#d4af37]/50 text-[#a88720] px-3.5 py-1 rounded-full font-mono font-bold text-sm shadow-xs flex items-center gap-1">
-                      <span>{lead.final_score}%</span>
+                    <div className="bg-gradient-to-br from-[#fffdf7] to-[#f7eee0] border border-[#d4af37]/60 px-4 py-2 rounded-2xl shadow-xs text-center min-w-[75px]">
+                      <div className="text-base font-mono font-extrabold text-[#927218] tracking-tight">{lead.final_score}%</div>
+                      <div className="text-[9px] font-bold text-[#a88720] uppercase tracking-widest block mt-0.5">RELEVANCE</div>
                     </div>
-                    <div className="text-[#547067] text-[9px] font-mono font-bold uppercase tracking-wider mt-1.5">Relevance</div>
                   </div>
                 </div>
               </div>
@@ -484,6 +492,7 @@ export default function ProductDashboard() {
     </div>
   )
 }
+
 
 
 
