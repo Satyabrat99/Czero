@@ -380,108 +380,104 @@ export default function ProductDashboard() {
           </div>
         </div>
 
-        {/* 4. Bespoke Leads Feed List */}
+        {/* 4. Bespoke Sleek Compact Leads Feed List */}
         {filteredLeads.length === 0 ? (
-          <div className="bg-white border border-[#e0ebe6] rounded-2xl p-14 text-center shadow-xs">
-            <div className="relative flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-[#ebf2ee] rounded-2xl text-[#d4af37] text-2xl font-bold border border-[#d4af37]/40">
+          <div className="bg-white border border-[#e0ebe6] rounded-2xl p-12 text-center shadow-xs">
+            <div className="relative flex items-center justify-center w-14 h-14 mx-auto mb-3 bg-[#ebf2ee] rounded-2xl text-[#d4af37] text-xl font-bold border border-[#d4af37]/40">
               📡
             </div>
-            <h3 className="text-3xl font-display text-[#072720] mb-2">No qualified leads in this view</h3>
-            <p className="text-[#547067] text-xs max-w-sm mx-auto mb-6 leading-relaxed font-sans">
+            <h3 className="text-2xl font-display text-[#072720] mb-2">No qualified leads in this view</h3>
+            <p className="text-[#547067] text-xs max-w-sm mx-auto mb-5 leading-relaxed font-sans">
               The monitoring pipeline is actively checking 9 feeds every 15 minutes. Check back shortly or trigger an immediate sweep.
             </p>
             <button
               onClick={handleManualScan}
               disabled={isScanning}
-              className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-semibold px-6 py-3 rounded-full transition shadow-sm disabled:opacity-50"
+              className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-semibold px-5 py-2.5 rounded-full transition shadow-sm disabled:opacity-50"
             >
               Trigger Radar Sweep ⟳
             </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-3.5">
             {filteredLeads.map((lead, i) => (
               <div
                 key={i}
-                className="bg-white border border-[#072720]/15 hover:border-[#072720]/40 rounded-2xl p-7 transition-all duration-300 shadow-[0_4px_24px_-4px_rgba(7,39,32,0.06)] hover:shadow-[0_8px_32px_-4px_rgba(7,39,32,0.12)] relative overflow-hidden group"
+                className="bg-white border border-[#072720]/15 hover:border-[#072720]/35 rounded-xl p-4.5 sm:p-5 transition-all duration-200 shadow-[0_2px_10px_-2px_rgba(7,39,32,0.04)] hover:shadow-[0_6px_20px_-2px_rgba(7,39,32,0.08)] relative overflow-hidden group"
               >
                 {/* Left score accent strip */}
                 <div
-                  className={`absolute top-0 left-0 bottom-0 w-1.5 ${
+                  className={`absolute top-0 left-0 bottom-0 w-1 ${
                     lead.category === 'hot' ? 'bg-gradient-to-b from-[#d4af37] via-[#c5a059] to-[#072720]' :
                     lead.category === 'warm' ? 'bg-gradient-to-b from-[#10b981] to-[#072720]' : 'bg-[#e0ebe6]'
                   }`}
                 ></div>
 
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 pl-2">
-                  <div className="flex-1 space-y-4">
-                    
-                    {/* Meta Row */}
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-xs ${
+                <div className="pl-1.5 space-y-2.5">
+                  {/* Sleek Top Header Meta Row with Inline Relevance Score */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[9.5px] font-bold uppercase tracking-wider border shadow-xs ${
                         lead.category === 'hot' ? 'bg-[#fffdf7] border-[#d4af37]/60 text-[#8c6b12]' :
                         lead.category === 'warm' ? 'bg-[#ebf2ee] border-[#10b981]/40 text-[#072720]' :
                         'bg-[#f4f7f5] border-[#e0ebe6] text-[#547067]'
                       }`}>
-                        {lead.category === 'hot' ? '🔥 Hot Buyer Intent' : lead.category === 'warm' ? '⚡ Warm Lead' : lead.category}
+                        {lead.category === 'hot' ? '🔥 Hot Intent' : lead.category === 'warm' ? '⚡ Warm Lead' : lead.category}
                       </span>
                       
-                      <span className="font-mono font-bold text-white capitalize bg-[#072720] border border-[#0d3c30] px-3 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1.5 shadow-xs">
-                        <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full"></span>
+                      <span className="font-mono font-bold text-white capitalize bg-[#072720] border border-[#0d3c30] px-2 py-0.5 rounded-full text-[9.5px] inline-flex items-center gap-1 shadow-xs">
+                        <span className="w-1 h-1 bg-[#d4af37] rounded-full"></span>
                         {lead.source}
                       </span>
 
                       {lead.author_username && lead.author_username !== 'unknown' && (
-                        <span className="font-mono text-xs font-semibold text-[#547067]">by @{lead.author_username}</span>
+                        <span className="font-mono text-[11px] font-medium text-[#547067]">by @{lead.author_username}</span>
                       )}
                     </div>
 
-                    {/* Post Text - High Contrast Deep Charcoal */}
-                    <p className="text-[#061d18] text-[15px] sm:text-[16px] leading-[1.6] font-sans font-semibold tracking-tight pr-2">
-                      "{lead.text}"
-                    </p>
-
-                    {/* AI Intent Intelligence Box - Executive Deep Forest Container */}
-                    <div className="bg-[#f0f6f3] border border-[#145343]/20 border-l-4 border-l-[#d4af37] p-4 rounded-xl text-xs text-[#0a3328] leading-relaxed shadow-xs space-y-1">
-                      <div className="font-bold text-[#072720] uppercase tracking-wider text-[11px] font-sans flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full"></span>
-                        <span>AI Intent Reasoning</span>
-                      </div>
-                      <p className="font-medium text-[13.5px] leading-relaxed font-sans text-[#0a3328]">
-                        {lead.reasoning}
-                      </p>
-                    </div>
-
-                    {/* Actions Row */}
-                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                      {lead.source_url && (
-                        <a
-                          href={lead.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-xs px-4 py-2 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
-                        >
-                          <span>Open Original Thread</span>
-                          <span className="text-[10px]">↗</span>
-                        </a>
-                      )}
-
-                      <Link
-                        href={`/dashboard/leads/${i}`}
-                        className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-xs px-4 py-2 rounded-full transition shadow-xs inline-flex items-center gap-1.5"
-                      >
-                        <span>View AI Reply Draft</span>
-                        <span>→</span>
-                      </Link>
+                    {/* Inline Gold Relevance Badge */}
+                    <div className="bg-gradient-to-r from-[#fffdf7] to-[#f7eee0] border border-[#d4af37]/60 px-3 py-0.5 rounded-full font-mono text-xs font-bold text-[#927218] flex items-center gap-1 shadow-xs shrink-0">
+                      <span>{lead.final_score}%</span>
+                      <span className="text-[9px] font-bold uppercase text-[#a88720] tracking-wider">Match</span>
                     </div>
                   </div>
 
-                  {/* Executive Metallic Gold Relevance Score Pill Right */}
-                  <div className="flex items-center md:flex-col md:items-end justify-between border-t md:border-t-0 border-[#e0ebe6] pt-3 md:pt-0 shrink-0">
-                    <div className="bg-gradient-to-br from-[#fffdf7] to-[#f7eee0] border border-[#d4af37]/60 px-4 py-2 rounded-2xl shadow-xs text-center min-w-[75px]">
-                      <div className="text-base font-mono font-extrabold text-[#927218] tracking-tight">{lead.final_score}%</div>
-                      <div className="text-[9px] font-bold text-[#a88720] uppercase tracking-widest block mt-0.5">RELEVANCE</div>
-                    </div>
+                  {/* Post Text - Compact High-Contrast Typography */}
+                  <p className="text-[#061d18] text-[14px] sm:text-[14.5px] leading-[1.5] font-sans font-semibold tracking-tight line-clamp-3">
+                    "{lead.text}"
+                  </p>
+
+                  {/* AI Intent Reasoning Box - Sleek Inline Banner */}
+                  <div className="bg-[#f0f6f3] border-l-3 border-l-[#d4af37] px-3 py-2 rounded-r-lg text-[12px] text-[#0a3328] font-medium leading-normal flex items-baseline gap-2">
+                    <span className="font-bold text-[#072720] uppercase tracking-wider text-[10px] shrink-0 font-sans">
+                      AI Intent:
+                    </span>
+                    <span className="text-[#0a3328] line-clamp-2 font-sans">
+                      {lead.reasoning}
+                    </span>
+                  </div>
+
+                  {/* Sleek Compact Action Buttons */}
+                  <div className="flex items-center gap-2.5 pt-0.5">
+                    {lead.source_url && (
+                      <a
+                        href={lead.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1"
+                      >
+                        <span>Open Thread</span>
+                        <span className="text-[9px]">↗</span>
+                      </a>
+                    )}
+
+                    <Link
+                      href={`/dashboard/leads/${i}`}
+                      className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-[11px] px-3.5 py-1.5 rounded-full transition shadow-xs inline-flex items-center gap-1"
+                    >
+                      <span>View AI Draft</span>
+                      <span>→</span>
+                    </Link>
                   </div>
                 </div>
               </div>
