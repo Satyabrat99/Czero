@@ -11,9 +11,13 @@ class Settings(BaseSettings):
     reddit_client_id: str = ""
     reddit_client_secret: str = ""
     reddit_user_agent: str = "CzeroBot/1.0"
+    llm_provider: str = "openai"
+    mimo_api_key: str = ""
+    nvidia_api_key: str = ""
 
     class Config:
         env_file = ".env"
+        extra = "ignore"  # Prevent validation errors if other env vars are present
 
 
 @lru_cache()

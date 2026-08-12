@@ -3,6 +3,15 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 import hashlib
+import asyncio
+
+_exa_semaphore = None
+
+def get_exa_semaphore() -> asyncio.Semaphore:
+    global _exa_semaphore
+    if _exa_semaphore is None:
+        _exa_semaphore = asyncio.Semaphore(3)  # Limit to 3 concurrent Exa queries
+    return _exa_semaphore
 
 
 @dataclass

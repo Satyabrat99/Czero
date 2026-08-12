@@ -1,9 +1,10 @@
 """Exa Reddit collector - finds Reddit content via semantic search."""
 
 import os
+import asyncio
 from datetime import datetime, timedelta
-from exa_py import Exa
-from .base import BaseSourceManager, Signal
+from exa_py import AsyncExa
+from .base import BaseSourceManager, Signal, get_exa_semaphore
 
 # Noise phrases to filter out
 NOISE_PHRASES = [
@@ -30,7 +31,7 @@ class ExaRedditCollector(BaseSourceManager):
 
     def __init__(self):
         api_key = os.getenv("EXA_API_KEY")
-        self.exa = Exa(api_key=api_key) if api_key else None
+        self.exa = AsyncExa(api_key=api_key) if api_key else None
 
     async def collect(self, product: dict) -> list[Signal]:
         if not self.exa:
@@ -43,30 +44,41 @@ class ExaRedditCollector(BaseSourceManager):
         queries = [f"Reddit {kw} recommendation" for kw in keywords[:3]]
         queries += [f"Reddit {comp} alternative" for comp in competitors[:2]]
 
-        for query in queries:
-            try:
-                results = self.exa.search(
-                    query,
-                    num_results=5,
-                    start_published_date=(datetime.now() - timedelta(hours=24)).isoformat(),
-                    contents={"highlights": True},
-                )
-                for result in results.results:
-                    text = result.text or result.title or ""
+        start_published_date = (datetime.now() - timedelta(hours=24)).isoformat()
 
-                    # FILTER: Skip noise
-                    if is_noise(text):
-                        continue
+        async def run_search(query: str):
+            semaphore = get_exa_semaphore()
+            async with semaphore:
+                try:
+                    results = await self.exa.search(
+                        query,
+                        num_results=5,
+                        start_published_date=start_published_date,
+                        contents={"highlights": True},
+                    )
+                    return results.results
+                except Exception as e:
+                    print(f"Exa Reddit error for '{query}': {e}")
+                    return []
 
-                    if "reddit.com" in result.url or "reddit" in (result.title or "").lower():
-                        signals.append(Signal(
-                            source="reddit",
-                            source_url=result.url,
-                            author_username="unknown",
-                            text=text,
-                            metadata={"via": "exa_semantic"},
-                        ))
-            except Exception as e:
-                print(f"Exa Reddit error: {e}")
+        search_tasks = [run_search(q) for q in queries]
+        results_list = await asyncio.gather(*search_tasks)
+
+        for results in results_list:
+            for result in results:
+                text = result.text or result.title or ""
+
+                # FILTER: Skip noise
+                if is_noise(text):
+                    continue
+
+                if "reddit.com" in result.url or "reddit" in (result.title or "").lower():
+                    signals.append(Signal(
+                        source="reddit",
+                        source_url=result.url,
+                        author_username="unknown",
+                        text=text,
+                        metadata={"via": "exa_semantic"},
+                    ))
 
         return signals

@@ -8,7 +8,8 @@ This collector uses RSS feeds for reliable, free Reddit access.
 import re
 import time
 import logging
-from datetime import UTC, datetime
+import asyncio
+from datetime import UTC, datetime, timedelta
 from typing import Callable
 
 import feedparser
@@ -52,10 +53,8 @@ class RedditRSSCollector(BaseSourceManager):
         return "reddit"
     
     def __init__(self):
-        self.client = httpx.Client(
-            timeout=15.0,
-            headers={"User-Agent": REDDIT_USER_AGENT}
-        )
+        # We will instantiate AsyncClient per request to avoid session conflicts in multi-threaded environments
+        pass
     
     async def collect(self, product: dict) -> list[Signal]:
         """Collect signals from Reddit via RSS."""
@@ -68,31 +67,32 @@ class RedditRSSCollector(BaseSourceManager):
         slug = "+".join(subreddits[:5])
         url = f"https://www.reddit.com/r/{slug}/new/.rss"
         
-        for attempt in range(MAX_RATE_LIMIT_RETRIES):
-            try:
-                r = self.client.get(url, params={"limit": PAGE_SIZE})
-                
-                # Handle rate limiting
-                if r.status_code == 429:
-                    delay = self._get_delay(r, attempt)
-                    logger.info(f"Reddit rate limited, waiting {delay:.0f}s (attempt {attempt + 1})")
-                    time.sleep(delay)
-                    continue
-                
-                r.raise_for_status()
-                
-                # Parse RSS feed
-                posts = self._parse_rss(r.text, keywords)
-                signals.extend(posts)
-                
-                break  # Success, exit retry loop
-                
-            except httpx.HTTPStatusError as e:
-                logger.error(f"Reddit HTTP error: {e}")
-                break
-            except Exception as e:
-                logger.error(f"Reddit RSS error: {e}")
-                break
+        async with httpx.AsyncClient(timeout=15.0, headers={"User-Agent": REDDIT_USER_AGENT}) as client:
+            for attempt in range(MAX_RATE_LIMIT_RETRIES):
+                try:
+                    r = await client.get(url, params={"limit": PAGE_SIZE})
+                    
+                    # Handle rate limiting
+                    if r.status_code == 429:
+                        delay = self._get_delay(r, attempt)
+                        logger.info(f"Reddit rate limited, waiting {delay:.0f}s (attempt {attempt + 1})")
+                        await asyncio.sleep(delay)
+                        continue
+                    
+                    r.raise_for_status()
+                    
+                    # Parse RSS feed
+                    posts = self._parse_rss(r.text, keywords, product.get("timeframe_hours", 24))
+                    signals.extend(posts)
+                    
+                    break  # Success, exit retry loop
+                    
+                except httpx.HTTPStatusError as e:
+                    logger.error(f"Reddit HTTP error: {e}")
+                    break
+                except Exception as e:
+                    logger.error(f"Reddit RSS error: {e}")
+                    break
         
         return signals
     
@@ -110,7 +110,7 @@ class RedditRSSCollector(BaseSourceManager):
         delay = RATE_LIMIT_BACKOFF_BASE_SECONDS * (2 ** attempt)
         return min(delay, RATE_LIMIT_DELAY_CAP_SECONDS)
     
-    def _parse_rss(self, xml_text: str, keywords: list[str]) -> list[Signal]:
+    def _parse_rss(self, xml_text: str, keywords: list[str], timeframe_hours: int = 24) -> list[Signal]:
         """Parse Reddit RSS feed and extract signals."""
         signals = []
         
@@ -149,6 +149,10 @@ class RedditRSSCollector(BaseSourceManager):
                     tzinfo=UTC
                 )
             else:
+                continue
+            
+            # Check if post age is within our monitoring timeframe window
+            if datetime.now(UTC) - occurred_at > timedelta(hours=timeframe_hours):
                 continue
             
             # Extract subreddit from URL

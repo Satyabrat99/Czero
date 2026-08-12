@@ -18,7 +18,8 @@ class HNSourceManager(BaseSourceManager):
         """Search HN for buying intent signals."""
         signals = []
         keywords = product.get("keywords", [])
-        week_ago = int((datetime.now(timezone.utc) - timedelta(days=7)).timestamp())
+        timeframe_hours = product.get("timeframe_hours", 24)
+        time_threshold = int((datetime.now(timezone.utc) - timedelta(hours=timeframe_hours)).timestamp())
 
         async with httpx.AsyncClient() as client:
             for keyword in keywords:
@@ -30,7 +31,7 @@ class HNSourceManager(BaseSourceManager):
                                 "query": keyword,
                                 "tags": tags,
                                 "hitsPerPage": 15,
-                                "numericFilters": f"created_at_i>{week_ago}"
+                                "numericFilters": f"created_at_i>{time_threshold}"
                             },
                             timeout=10
                         )

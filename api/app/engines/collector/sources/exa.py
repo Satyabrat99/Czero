@@ -1,7 +1,8 @@
 import os
-from exa_py import Exa
+import asyncio
+from exa_py import AsyncExa
 from datetime import datetime, timedelta
-from .base import BaseSourceManager, Signal
+from .base import BaseSourceManager, Signal, get_exa_semaphore
 
 # Noise phrases to filter out
 NOISE_PHRASES = [
@@ -34,7 +35,7 @@ class ExaSourceManager(BaseSourceManager):
             api_key = os.getenv("EXA_API_KEY")
             if not api_key:
                 return None
-            self._exa = Exa(api_key=api_key)
+            self._exa = AsyncExa(api_key=api_key)
         return self._exa
 
     def name(self) -> str:
@@ -59,40 +60,50 @@ class ExaSourceManager(BaseSourceManager):
         for competitor in competitors[:2]:
             queries.append(f"Alternative to {competitor}")
 
-        for query in queries:
-            try:
-                results = exa.search(
-                    query,
-                    type="auto",
-                    num_results=10,
-                    start_published_date=(datetime.now() - timedelta(hours=24)).isoformat(),
-                    contents={"highlights": True}
-                )
+        timeframe_hours = product.get("timeframe_hours", 24)
+        start_published_date = (datetime.now() - timedelta(hours=timeframe_hours)).isoformat() + "Z"
 
-                for result in results.results:
-                    text = result.text or result.title or ""
-
-                    # FILTER: Skip noise
-                    if is_noise(text):
-                        continue
-
-                    source = self._detect_source(result.url)
-
-                    signal = Signal(
-                        source=source,
-                        source_url=result.url,
-                        author_username=result.author or "unknown",
-                        text=result.text or result.title or "",
-                        posted_at=result.published_date,
-                        metadata={
-                            "exa_score": getattr(result, 'score', None),
-                            "domain": result.url.split("/")[2] if "/" in result.url else "",
-                        }
+        async def run_search(query: str):
+            semaphore = get_exa_semaphore()
+            async with semaphore:
+                try:
+                    results = await exa.search(
+                        query,
+                        type="auto",
+                        num_results=10,
+                        start_published_date=start_published_date,
+                        contents={"highlights": True}
                     )
-                    signals.append(signal)
-            except Exception as e:
-                print(f"Exa error for '{query}': {e}")
-                continue
+                    return results.results
+                except Exception as e:
+                    print(f"Exa error for '{query}': {e}")
+                    return []
+
+        search_tasks = [run_search(q) for q in queries]
+        results_list = await asyncio.gather(*search_tasks)
+
+        for results in results_list:
+            for result in results:
+                text = result.text or result.title or ""
+
+                # FILTER: Skip noise
+                if is_noise(text):
+                    continue
+
+                source = self._detect_source(result.url)
+
+                signal = Signal(
+                    source=source,
+                    source_url=result.url,
+                    author_username=result.author or "unknown",
+                    text=text,
+                    posted_at=result.published_date,
+                    metadata={
+                        "exa_score": getattr(result, 'score', None),
+                        "domain": result.url.split("/")[2] if "/" in result.url else "",
+                    }
+                )
+                signals.append(signal)
 
         return signals
 
