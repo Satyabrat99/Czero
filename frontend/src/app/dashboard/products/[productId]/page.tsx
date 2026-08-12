@@ -197,32 +197,32 @@ export default function ProductDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-canvas text-obsidian-ink flex items-center justify-center">
-        <div className="font-mono text-xs text-fog flex items-center space-x-3 bg-white px-6 py-4 rounded-full border border-ash shadow-sm">
-          <span className="w-2.5 h-2.5 bg-iris-pulse rounded-full animate-ping"></span>
-          <span className="tracking-wide uppercase font-semibold">Initializing Radar Stream...</span>
+      <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex items-center justify-center">
+        <div className="font-mono text-xs text-[#547067] flex items-center space-x-3 bg-white px-6 py-4 rounded-full border border-[#e0ebe6] shadow-sm">
+          <span className="w-2.5 h-2.5 bg-[#10b981] rounded-full animate-ping"></span>
+          <span className="tracking-wide uppercase font-semibold text-[#072720]">Initializing Radar Stream...</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-canvas text-obsidian-ink flex flex-col antialiased bg-grid-dots">
+    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-dots">
       <main className="flex-1 max-w-[1140px] w-full mx-auto px-6 sm:px-10 py-10">
         
         {/* Navigation Breadcrumb */}
         <div className="mb-6">
-          <Link href="/dashboard" className="text-xs font-mono text-fog hover:text-obsidian-ink transition inline-flex items-center gap-1.5 group">
+          <Link href="/dashboard" className="text-xs font-mono text-[#547067] hover:text-[#072720] transition inline-flex items-center gap-1.5 group">
             <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
             <span>Workspaces</span>
           </Link>
         </div>
 
         {/* 1. Header Block */}
-        <div className="mb-8 border-b border-ash pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="mb-8 border-b border-[#e0ebe6] pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div className="flex items-baseline gap-3 mb-2">
-              <h1 className="text-5xl sm:text-6xl font-display text-obsidian-ink tracking-tight italic">
+              <h1 className="text-5xl sm:text-6xl font-display text-[#072720] tracking-tight">
                 {productName || 'Product Feed'}
               </h1>
               {productUrl && (
@@ -230,13 +230,13 @@ export default function ProductDashboard() {
                   href={productUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-xs text-fog hover:text-obsidian-ink transition underline decoration-ash underline-offset-4"
+                  className="font-mono text-xs text-[#547067] hover:text-[#072720] transition underline decoration-[#e0ebe6] underline-offset-4"
                 >
                   {productUrl.replace('https://', '').replace('http://', '').replace('www.', '')}
                 </a>
               )}
             </div>
-            <p className="text-fog max-w-lg text-sm leading-relaxed font-sans font-normal">
+            <p className="text-[#547067] max-w-lg text-sm leading-relaxed font-sans">
               Autonomous social listening radar monitoring Reddit, Hacker News, Lobste.rs, Dev.to, and Exa web feeds for active buyer intent.
             </p>
           </div>
@@ -245,11 +245,11 @@ export default function ProductDashboard() {
             <button
               onClick={handleManualScan}
               disabled={isScanning}
-              className="bg-obsidian-ink hover:bg-carbon text-white font-medium text-xs px-5 py-2.5 rounded-full transition-all duration-200 disabled:opacity-50 inline-flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95"
+              className="bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold text-xs px-5 py-3 rounded-full transition shadow-sm disabled:opacity-50 inline-flex items-center gap-2"
             >
               {isScanning ? (
                 <>
-                  <span className="w-2 h-2 bg-emerald-radar rounded-full animate-ping"></span>
+                  <span className="w-2 h-2 bg-[#10b981] rounded-full animate-ping"></span>
                   <span className="font-mono text-xs uppercase tracking-wider">Scanning...</span>
                 </>
               ) : (
@@ -261,7 +261,7 @@ export default function ProductDashboard() {
             </button>
             <Link
               href="/dashboard/settings"
-              className="bg-white border border-ash hover:border-obsidian-ink text-obsidian-ink font-medium text-xs px-4 py-2.5 rounded-full transition-all shadow-sm hover:shadow"
+              className="bg-white border border-[#e0ebe6] hover:border-[#072720] text-[#072720] font-semibold text-xs px-4 py-3 rounded-full transition shadow-sm"
             >
               Settings
             </Link>
@@ -269,39 +269,39 @@ export default function ProductDashboard() {
         </div>
 
         {/* 2. LIVE BACKGROUND MONITORING STATUS BAR (Bespoke Radar Card) */}
-        <div className="glass-panel rounded-2xl p-5 mb-8 shadow-[0_4px_25px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all">
+        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-5 mb-8 shadow-[0_4px_20px_-4px_rgba(7,39,32,0.04)] flex flex-col sm:flex-row items-center justify-between gap-5 transition-all">
           <div className="flex items-center gap-4">
             <div className="relative flex items-center justify-center w-9 h-9 shrink-0">
-              <span className="absolute w-8 h-8 rounded-full bg-emerald-500/20 animate-ping"></span>
-              <span className="w-3.5 h-3.5 bg-emerald-500 rounded-full relative z-10 radar-glow"></span>
+              <span className="absolute w-8 h-8 rounded-full bg-[#10b981]/20 animate-ping"></span>
+              <span className="w-3.5 h-3.5 bg-[#10b981] rounded-full relative z-10 radar-glow"></span>
             </div>
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="text-xs font-bold text-obsidian-ink uppercase tracking-wider font-sans">
-                  Background Monitoring Stream Active
+                <span className="text-xs font-bold text-[#072720] uppercase tracking-wider font-sans">
+                  Background Radar Stream Active
                 </span>
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full shadow-inner">
+                <span className="bg-[#fbf7e8] border border-[#d4af37]/40 text-[#a88720] text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full">
                   15m Interval
                 </span>
               </div>
-              <p className="text-xs text-fog mt-1 font-sans">
-                Scanning 9 feeds every 15 minutes • Last auto-sweep: <span className="font-mono font-medium text-obsidian-ink">{lastChecked}</span>
+              <p className="text-xs text-[#547067] mt-1 font-sans">
+                Scanning 9 feeds every 15 minutes • Last auto-sweep: <span className="font-mono font-semibold text-[#072720]">{lastChecked}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 border-t sm:border-t-0 border-ash/60 pt-3 sm:pt-0 w-full sm:w-auto justify-between sm:justify-end">
+          <div className="flex items-center gap-6 border-t sm:border-t-0 border-[#e0ebe6] pt-3 sm:pt-0 w-full sm:w-auto justify-between sm:justify-end">
             <div className="text-right">
-              <div className="text-[10px] font-mono font-bold text-fog uppercase tracking-wider">Next Auto-Sweep</div>
-              <div className="text-sm font-mono font-bold text-emerald-700 bg-emerald-50/80 border border-emerald-200/60 px-3 py-0.5 rounded-full mt-0.5 inline-block shadow-xs">
+              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">Next Auto-Sweep</div>
+              <div className="text-sm font-mono font-bold text-[#072720] bg-[#ebf2ee] border border-[#e0ebe6] px-3 py-0.5 rounded-full mt-0.5 inline-block">
                 {formatCountdown(countdown)}
               </div>
             </div>
-            <div className="w-px h-8 bg-ash hidden sm:block"></div>
+            <div className="w-px h-8 bg-[#e0ebe6] hidden sm:block"></div>
             <div className="text-right">
-              <div className="text-[10px] font-mono font-bold text-fog uppercase tracking-wider">Radar Status</div>
-              <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              <div className="text-[10px] font-mono font-bold text-[#547067] uppercase tracking-wider">Radar Status</div>
+              <div className="text-xs font-semibold text-[#10b981] flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse"></span>
                 <span className="font-mono uppercase text-[11px] tracking-wider">Listening</span>
               </div>
             </div>
@@ -310,35 +310,35 @@ export default function ProductDashboard() {
 
         {/* Notice Banner */}
         {scanResult && (
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-3 rounded-xl text-xs font-medium mb-6 flex justify-between items-center shadow-xs">
+          <div className="bg-[#ebf2ee] border border-[#10b981]/40 text-[#072720] px-4 py-3 rounded-xl text-xs font-semibold mb-6 flex justify-between items-center shadow-xs">
             <span>{scanResult}</span>
-            <button onClick={() => setScanResult('')} className="text-emerald-700 hover:text-emerald-950 font-bold ml-2">✕</button>
+            <button onClick={() => setScanResult('')} className="text-[#072720] hover:text-black font-bold ml-2">✕</button>
           </div>
         )}
 
         {/* Live Radar Sweep Ticker Card */}
         {isScanning && (
-          <div className="border border-emerald-500/30 bg-emerald-50/30 backdrop-blur-md rounded-2xl p-5 mb-8 flex items-center gap-4 animate-pulse shadow-sm">
+          <div className="border border-[#10b981]/40 bg-[#ebf2ee]/60 rounded-2xl p-5 mb-8 flex items-center gap-4 animate-pulse shadow-sm">
             <div className="relative flex items-center justify-center w-10 h-10 shrink-0">
-              <span className="absolute w-8 h-8 rounded-full border border-emerald-500 animate-ping"></span>
-              <span className="w-3.5 h-3.5 bg-emerald-600 rounded-full"></span>
+              <span className="absolute w-8 h-8 rounded-full border border-[#10b981] animate-ping"></span>
+              <span className="w-3.5 h-3.5 bg-[#10b981] rounded-full"></span>
             </div>
             <div>
-              <div className="text-xs font-mono font-bold text-emerald-800 uppercase tracking-wider">Radar Sweep Executing</div>
-              <div className="text-xs font-medium text-obsidian-ink mt-0.5 font-mono">{scanStatus}</div>
+              <div className="text-xs font-mono font-bold text-[#072720] uppercase tracking-wider">Radar Sweep Executing</div>
+              <div className="text-xs font-semibold text-[#072720] mt-0.5 font-mono">{scanStatus}</div>
             </div>
           </div>
         )}
 
         {/* 3. Category Filter Tabs */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-1.5 bg-white border border-ash/80 p-1.5 rounded-full shadow-xs shrink-0">
+          <div className="flex items-center gap-1.5 bg-white border border-[#e0ebe6] p-1.5 rounded-full shadow-xs shrink-0">
             <button
               onClick={() => setActiveTab('all')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
                 activeTab === 'all'
-                  ? 'bg-obsidian-ink text-white shadow-sm font-semibold'
-                  : 'text-fog hover:text-obsidian-ink'
+                  ? 'bg-[#072720] text-white shadow-sm font-semibold'
+                  : 'text-[#547067] hover:text-[#072720]'
               }`}
             >
               All Matches ({leads.length})
@@ -347,12 +347,12 @@ export default function ProductDashboard() {
               onClick={() => setActiveTab('hot')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
                 activeTab === 'hot'
-                  ? 'bg-red-600 text-white shadow-sm font-semibold'
-                  : 'text-fog hover:text-obsidian-ink'
+                  ? 'bg-[#d4af37] text-[#072720] shadow-sm font-bold'
+                  : 'text-[#547067] hover:text-[#072720]'
               }`}
             >
               <span>🔥 Hot Intent</span>
-              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'hot' ? 'bg-white/20 text-white' : 'bg-red-50 text-red-700'}`}>
+              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'hot' ? 'bg-[#072720]/15 text-[#072720]' : 'bg-[#fbf7e8] text-[#a88720]'}`}>
                 {hotLeads.length}
               </span>
             </button>
@@ -360,37 +360,36 @@ export default function ProductDashboard() {
               onClick={() => setActiveTab('warm')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
                 activeTab === 'warm'
-                  ? 'bg-amber-600 text-white shadow-sm font-semibold'
-                  : 'text-fog hover:text-obsidian-ink'
+                  ? 'bg-[#0e4438] text-white shadow-sm font-semibold'
+                  : 'text-[#547067] hover:text-[#072720]'
               }`}
             >
               <span>⚡ Warm Leads</span>
-              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'warm' ? 'bg-white/20 text-white' : 'bg-amber-50 text-amber-700'}`}>
+              <span className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] ${activeTab === 'warm' ? 'bg-white/20 text-white' : 'bg-[#ebf2ee] text-[#072720]'}`}>
                 {warmLeads.length}
               </span>
             </button>
           </div>
 
-          <div className="text-xs font-mono text-fog self-center">
-            Showing <span className="font-bold text-obsidian-ink">{filteredLeads.length}</span> verified leads
+          <div className="text-xs font-mono text-[#547067] self-center">
+            Showing <span className="font-bold text-[#072720]">{filteredLeads.length}</span> verified leads
           </div>
         </div>
 
         {/* 4. Bespoke Leads Feed List */}
         {filteredLeads.length === 0 ? (
-          <div className="bg-white border border-ash/80 rounded-2xl p-14 text-center shadow-xs">
-            <div className="relative flex items-center justify-center w-20 h-20 mx-auto mb-4">
-              <span className="w-16 h-16 rounded-full border border-ash animate-ping"></span>
-              <span className="w-3 h-3 bg-obsidian-ink/30 rounded-full"></span>
+          <div className="bg-white border border-[#e0ebe6] rounded-2xl p-14 text-center shadow-xs">
+            <div className="relative flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-[#ebf2ee] rounded-2xl text-[#d4af37] text-2xl font-bold border border-[#d4af37]/40">
+              📡
             </div>
-            <h3 className="text-3xl font-display text-obsidian-ink italic mb-2">No qualified leads in this view</h3>
-            <p className="text-fog text-xs max-w-sm mx-auto mb-6 leading-relaxed font-sans">
+            <h3 className="text-3xl font-display text-[#072720] mb-2">No qualified leads in this view</h3>
+            <p className="text-[#547067] text-xs max-w-sm mx-auto mb-6 leading-relaxed font-sans">
               The monitoring pipeline is actively checking 9 feeds every 15 minutes. Check back shortly or trigger an immediate sweep.
             </p>
             <button
               onClick={handleManualScan}
               disabled={isScanning}
-              className="bg-obsidian-ink hover:bg-carbon text-white text-xs font-medium px-6 py-3 rounded-full transition shadow-sm hover:shadow active:scale-95 disabled:opacity-50"
+              className="bg-[#072720] hover:bg-[#0d3c30] text-white text-xs font-semibold px-6 py-3 rounded-full transition shadow-sm disabled:opacity-50"
             >
               Trigger Radar Sweep ⟳
             </button>
@@ -400,13 +399,13 @@ export default function ProductDashboard() {
             {filteredLeads.map((lead, i) => (
               <div
                 key={i}
-                className="bg-white border border-ash/90 hover:border-obsidian-ink/30 rounded-2xl p-6 transition-all duration-200 shadow-xs hover:shadow-md relative overflow-hidden group"
+                className="bg-white border border-[#e0ebe6] hover:border-[#072720]/40 rounded-2xl p-6 transition-all duration-200 shadow-[0_2px_12px_-2px_rgba(7,39,32,0.04)] relative overflow-hidden group"
               >
                 {/* Left score accent strip */}
                 <div
                   className={`absolute top-0 left-0 bottom-0 w-1.5 ${
-                    lead.category === 'hot' ? 'bg-red-500' :
-                    lead.category === 'warm' ? 'bg-amber-500' : 'bg-ash'
+                    lead.category === 'hot' ? 'bg-[#d4af37]' :
+                    lead.category === 'warm' ? 'bg-[#10b981]' : 'bg-[#e0ebe6]'
                   }`}
                 ></div>
 
@@ -415,32 +414,32 @@ export default function ProductDashboard() {
                     {/* Meta Row */}
                     <div className="flex flex-wrap items-center gap-2.5">
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                        lead.category === 'hot' ? 'bg-red-50 border-red-200 text-red-700' :
-                        lead.category === 'warm' ? 'bg-amber-50 border-amber-200 text-amber-700' :
-                        'bg-zinc-100 border-zinc-200 text-zinc-600'
+                        lead.category === 'hot' ? 'bg-[#fbf7e8] border-[#d4af37]/50 text-[#a88720]' :
+                        lead.category === 'warm' ? 'bg-[#ebf2ee] border-[#10b981]/40 text-[#072720]' :
+                        'bg-[#f4f7f5] border-[#e0ebe6] text-[#547067]'
                       }`}>
                         {lead.category === 'hot' ? '🔥 Hot Buyer Intent' : lead.category === 'warm' ? '⚡ Warm Lead' : lead.category}
                       </span>
                       
-                      <span className="font-mono font-semibold text-obsidian-ink/80 capitalize border border-ash/80 bg-canvas px-2.5 py-0.5 rounded-full text-[11px] inline-flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-obsidian-ink/40 rounded-full"></span>
+                      <span className="font-mono font-semibold text-[#072720] capitalize border border-[#e0ebe6] bg-[#f4f7f5] px-2.5 py-0.5 rounded-full text-[11px] inline-flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-[#072720]/40 rounded-full"></span>
                         {lead.source}
                       </span>
 
                       {lead.author_username && lead.author_username !== 'unknown' && (
-                        <span className="font-mono text-[11px] text-fog">by @{lead.author_username}</span>
+                        <span className="font-mono text-[11px] text-[#547067]">by @{lead.author_username}</span>
                       )}
                     </div>
 
                     {/* Post Text */}
-                    <p className="text-obsidian-ink text-[14.5px] leading-relaxed font-sans font-normal text-zinc-900 pr-4">
+                    <p className="text-[#072720] text-[14.5px] leading-relaxed font-sans font-medium pr-4">
                       "{lead.text}"
                     </p>
 
                     {/* AI Intent Intelligence Box */}
-                    <div className="bg-canvas-subtle/80 border-l-2 border-iris-pulse/60 p-3.5 rounded-r-xl text-xs text-fog leading-relaxed italic flex items-start gap-2">
+                    <div className="bg-[#f4f7f5] border-l-2 border-[#d4af37] p-3.5 rounded-r-xl text-xs text-[#547067] leading-relaxed flex items-start gap-2">
                       <div>
-                        <span className="font-bold not-italic text-obsidian-ink font-sans mr-1">AI Intent Score Reason:</span>
+                        <span className="font-bold text-[#072720] font-sans mr-1">AI Intent Score Reason:</span>
                         {lead.reasoning}
                       </div>
                     </div>
@@ -452,7 +451,7 @@ export default function ProductDashboard() {
                           href={lead.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-semibold text-obsidian-ink hover:text-iris-pulse transition inline-flex items-center gap-1 group/link"
+                          className="font-semibold text-[#072720] hover:text-[#d4af37] transition inline-flex items-center gap-1 group/link"
                         >
                           <span>Open Original Thread</span>
                           <span className="text-[10px] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform">↗</span>
@@ -461,7 +460,7 @@ export default function ProductDashboard() {
 
                       <Link
                         href={`/dashboard/leads/${i}`}
-                        className="text-fog hover:text-obsidian-ink font-medium transition inline-flex items-center gap-1"
+                        className="text-[#547067] hover:text-[#072720] font-medium transition inline-flex items-center gap-1"
                       >
                         <span>View AI Reply Draft</span>
                         <span>→</span>
@@ -470,11 +469,11 @@ export default function ProductDashboard() {
                   </div>
 
                   {/* Relevance Score Pill Right */}
-                  <div className="flex items-center md:flex-col md:items-end justify-between border-t md:border-t-0 border-ash/60 pt-3 md:pt-0 shrink-0">
-                    <div className="bg-emerald-50/80 border border-emerald-300/80 text-emerald-700 px-3.5 py-1 rounded-full font-mono font-bold text-sm shadow-xs flex items-center gap-1">
+                  <div className="flex items-center md:flex-col md:items-end justify-between border-t md:border-t-0 border-[#e0ebe6] pt-3 md:pt-0 shrink-0">
+                    <div className="bg-[#fbf7e8] border border-[#d4af37]/50 text-[#a88720] px-3.5 py-1 rounded-full font-mono font-bold text-sm shadow-xs flex items-center gap-1">
                       <span>{lead.final_score}%</span>
                     </div>
-                    <div className="text-fog text-[9px] font-mono font-bold uppercase tracking-wider mt-1.5">Relevance</div>
+                    <div className="text-[#547067] text-[9px] font-mono font-bold uppercase tracking-wider mt-1.5">Relevance</div>
                   </div>
                 </div>
               </div>
@@ -485,5 +484,6 @@ export default function ProductDashboard() {
     </div>
   )
 }
+
 
 

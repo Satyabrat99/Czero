@@ -98,32 +98,36 @@ export default function HomeOnboarding() {
   }
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center py-16 px-6 sm:px-12 bg-canvas">
+    <div className="flex-1 flex flex-col justify-center items-center py-16 px-6 sm:px-12 bg-[#f4f7f5] bg-grid-dots">
       <div className="max-w-xl w-full text-center space-y-8">
         
         {/* Header Title */}
         <div className="space-y-3">
-          <h1 className="text-5xl sm:text-6xl font-display tracking-tight text-obsidian-ink leading-[1.05]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#ebf2ee] border border-[#d4af37]/40 rounded-full text-[10px] font-bold text-[#072720] uppercase tracking-wider">
+            <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full gold-glow"></span>
+            <span>AI Intent Scanner Ingestion</span>
+          </div>
+          <h1 className="text-5xl sm:text-6xl font-display tracking-tight text-[#072720] leading-[1.05]">
             get your first 10 users by sunday
           </h1>
-          <p className="text-fog text-sm sm:text-base tracking-tight max-w-md mx-auto leading-relaxed">
+          <p className="text-[#547067] text-sm sm:text-base tracking-tight max-w-md mx-auto leading-relaxed">
             Enter your landing page URL and upload a screenshot to generate deep B2B context, target subreddits, and qualified buyer queries.
           </p>
         </div>
 
         {/* Form Container */}
-        <div className="bg-white border border-obsidian-ink/10 rounded-2xl p-8 shadow-sm text-left">
+        <div className="bg-white border border-[#e0ebe6] rounded-2xl p-8 shadow-[0_4px_25px_rgba(7,39,32,0.05)] text-left">
           {loading ? (
             <div className="py-12 text-center space-y-6">
               {/* Pulsing Scan Loader */}
               <div className="relative flex items-center justify-center w-24 h-24 mx-auto">
-                <span className="absolute w-20 h-20 rounded-full border border-iris-pulse/15 animate-ping"></span>
-                <span className="absolute w-14 h-14 rounded-full border border-iris-pulse/30 animate-pulse"></span>
-                <span className="relative w-4 h-4 bg-iris-pulse rounded-full"></span>
+                <span className="absolute w-20 h-20 rounded-full border border-[#10b981]/20 animate-ping"></span>
+                <span className="absolute w-14 h-14 rounded-full border border-[#d4af37]/30 animate-pulse"></span>
+                <span className="relative w-4 h-4 bg-[#072720] rounded-full radar-glow"></span>
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-obsidian-ink">Analyzing Product</h3>
-                <p className="text-xs text-fog animate-pulse">{loaderMessage}</p>
+                <h3 className="text-lg font-bold text-[#072720]">Analyzing Product Context</h3>
+                <p className="text-xs text-[#547067] font-mono animate-pulse">{loaderMessage}</p>
               </div>
             </div>
           ) : (
@@ -131,7 +135,7 @@ export default function HomeOnboarding() {
               
               {/* URL Input */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Landing Page URL
                 </label>
                 <input
@@ -139,31 +143,31 @@ export default function HomeOnboarding() {
                   placeholder="https://yourproduct.com"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  className="w-full p-3.5 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink placeholder-fog/45 focus:outline-none transition text-sm font-medium"
+                  className="w-full p-3.5 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] placeholder-[#547067]/50 focus:outline-none transition text-sm font-medium"
                   required
                 />
               </div>
 
               {/* Screenshot Upload with visual label */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Upload Screenshot (Vision Ingestion)
                 </label>
-                <p className="text-[10px] text-fog mb-2 leading-relaxed">
+                <p className="text-[10px] text-[#547067] mb-2 leading-relaxed">
                   Provide an image of your UI for deep visual structure and feature mapping.
                 </p>
-                <div className="relative border border-dashed border-obsidian-ink/20 hover:border-obsidian-ink/40 rounded-lg p-4 flex items-center justify-center transition bg-canvas/20 cursor-pointer">
+                <div className="relative border border-dashed border-[#072720]/20 hover:border-[#072720]/50 rounded-xl p-4 flex items-center justify-center transition bg-[#f8faf8] cursor-pointer">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <div className="text-xs text-center text-fog font-medium">
+                  <div className="text-xs text-center text-[#547067] font-medium">
                     {screenshotName ? (
-                      <span className="text-obsidian-ink font-semibold">{screenshotName}</span>
+                      <span className="text-[#072720] font-semibold">{screenshotName}</span>
                     ) : (
-                      <>Select layout image file <span className="text-[10px] text-fog/70 block mt-0.5">PNG, JPG, or WebP</span></>
+                      <>Select layout image file <span className="text-[10px] text-[#547067]/70 block mt-0.5">PNG, JPG, or WebP</span></>
                     )}
                   </div>
                 </div>
@@ -171,20 +175,20 @@ export default function HomeOnboarding() {
 
               {/* Niche vs General Toggle */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Market Scale Focus
                 </label>
-                <p className="text-[10px] text-fog mb-3 leading-relaxed">
+                <p className="text-[10px] text-[#547067] mb-3 leading-relaxed">
                   General markets look for high volume activity. Niche focus runs deep scans backfilling older signals.
                 </p>
-                <div className="grid grid-cols-2 gap-3 border border-obsidian-ink/10 p-1 rounded-lg bg-canvas/30">
+                <div className="grid grid-cols-2 gap-3 border border-[#e0ebe6] p-1.5 rounded-xl bg-[#f4f7f5]">
                   <button
                     type="button"
                     onClick={() => setIsNiche(false)}
-                    className={`py-2 px-3 text-xs font-semibold rounded-md transition ${
+                    className={`py-2.5 px-3 text-xs font-semibold rounded-lg transition ${
                       !isNiche 
-                        ? 'bg-white text-obsidian-ink border border-obsidian-ink/10 shadow-xs' 
-                        : 'text-fog hover:text-obsidian-ink'
+                        ? 'bg-white text-[#072720] border border-[#e0ebe6] shadow-xs' 
+                        : 'text-[#547067] hover:text-[#072720]'
                     }`}
                   >
                     General Market (24h Window)
@@ -192,10 +196,10 @@ export default function HomeOnboarding() {
                   <button
                     type="button"
                     onClick={() => setIsNiche(true)}
-                    className={`py-2 px-3 text-xs font-semibold rounded-md transition ${
+                    className={`py-2.5 px-3 text-xs font-semibold rounded-lg transition ${
                       isNiche 
-                        ? 'bg-white text-obsidian-ink border border-obsidian-ink/10 shadow-xs' 
-                        : 'text-fog hover:text-obsidian-ink'
+                        ? 'bg-white text-[#072720] border border-[#e0ebe6] shadow-xs' 
+                        : 'text-[#547067] hover:text-[#072720]'
                     }`}
                   >
                     Niche Focus (7-day Window)
@@ -204,16 +208,16 @@ export default function HomeOnboarding() {
               </div>
 
               {error && (
-                <div className="text-xs text-red-500 font-semibold bg-red-50 border border-red-100 p-3 rounded-lg leading-relaxed">
+                <div className="text-xs text-red-600 font-semibold bg-red-50 border border-red-200 p-3 rounded-xl leading-relaxed">
                   {error}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-obsidian-ink hover:bg-obsidian-ink/90 text-white font-medium rounded-full flex items-center justify-center transition shadow-sm text-sm"
+                className="w-full py-3.5 bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold rounded-full flex items-center justify-center transition shadow-sm text-sm"
               >
-                Analyze Landing Page <span className="ml-1.5 font-sans">→</span>
+                Analyze Landing Page <span className="ml-1.5">→</span>
               </button>
 
             </form>
@@ -223,3 +227,4 @@ export default function HomeOnboarding() {
     </div>
   )
 }
+

@@ -218,19 +218,20 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-canvas text-obsidian-ink flex flex-col antialiased">
+    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-dots">
       {/* Onboarding Container */}
       <main className="flex-1 flex items-center justify-center p-6 sm:p-12">
-        <div className="max-w-2xl w-full bg-white border border-obsidian-ink/10 rounded-lg p-8 sm:p-12 relative my-8">
+        <div className="max-w-2xl w-full bg-white border border-[#e0ebe6] rounded-2xl p-8 sm:p-12 relative my-8 shadow-[0_4px_25px_rgba(7,39,32,0.05)]">
           
-          <div className="mb-8">
-            <div className="text-[11px] font-bold text-iris-pulse uppercase tracking-wider mb-2">
-              Setup Workspace • Step {step} of 2
+          <div className="mb-8 border-b border-[#e0ebe6] pb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#fbf7e8] border border-[#d4af37]/40 rounded-full text-[10px] font-bold text-[#a88720] uppercase tracking-wider mb-2">
+              <span className="w-1.5 h-1.5 bg-[#d4af37] rounded-full gold-glow"></span>
+              <span>Setup Workspace • Step {step} of 2</span>
             </div>
-            <h1 className="text-4xl font-display tracking-tight text-obsidian-ink mb-3 leading-[1.1]">
-              {step === 1 ? "Product Scan" : "Review Context Profile"}
+            <h1 className="text-4xl font-display tracking-tight text-[#072720] mb-2 leading-[1.1]">
+              {step === 1 ? "Product Scan Ingestion" : "Review Intent Context Profile"}
             </h1>
-            <p className="text-fog text-[14px] leading-relaxed max-w-lg">
+            <p className="text-[#547067] text-sm leading-relaxed max-w-lg">
               {step === 1 
                 ? "Enter your landing page URL. We'll automatically scan it to extract your product scope, ICP, and target subreddits." 
                 : "Review and edit the AI-generated product report below to align search queries before monitoring."
@@ -239,13 +240,13 @@ export default function Settings() {
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-lg text-xs font-medium mb-6">
+            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-xs font-semibold mb-6">
               <span className="font-bold mr-1">Error:</span> {error}
             </div>
           )}
 
           {success && (
-            <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 p-4 rounded-lg text-xs font-medium mb-6">
+            <div className="bg-[#ebf2ee] border border-[#10b981]/40 text-[#072720] p-4 rounded-xl text-xs font-semibold mb-6">
               <span className="font-bold mr-1">Success:</span> {success}
             </div>
           )}
@@ -254,7 +255,7 @@ export default function Settings() {
           {step === 1 && (
             <form onSubmit={handleAnalyzeURL} className="space-y-6">
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-2">
                   Product Landing Page URL
                 </label>
                 <input
@@ -262,7 +263,7 @@ export default function Settings() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://your-saas.com"
-                  className="w-full p-3.5 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink placeholder-fog/60 focus:outline-none transition text-sm"
+                  className="w-full p-3.5 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] placeholder-[#547067]/60 focus:outline-none transition text-sm font-medium"
                   required
                   disabled={loading}
                 />
@@ -270,10 +271,10 @@ export default function Settings() {
 
               {/* Optional Screenshot Vision Uploader */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-2">
                   Product UI Screenshot (Optional)
                 </label>
-                <div className="border border-dashed border-obsidian-ink/20 rounded-lg p-6 text-center hover:border-obsidian-ink/40 transition bg-canvas/30 relative">
+                <div className="border border-dashed border-[#072720]/20 rounded-xl p-6 text-center hover:border-[#072720]/50 transition bg-[#f8faf8] relative">
                   <input
                     type="file"
                     accept="image/*"
@@ -282,10 +283,10 @@ export default function Settings() {
                     disabled={loading}
                   />
                   <div className="space-y-1">
-                    <div className="text-xs font-semibold text-obsidian-ink">
+                    <div className="text-xs font-semibold text-[#072720]">
                       {screenshotName ? `Selected: ${screenshotName}` : "Click to upload product screenshot"}
                     </div>
-                    <p className="text-[10px] text-fog">
+                    <p className="text-[10px] text-[#547067]">
                       Ingests the UI via Vision LLM to extract visual look, design complexity, and dashboard layout features.
                     </p>
                   </div>
@@ -293,35 +294,35 @@ export default function Settings() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-2">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-2">
                   Market Type
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     type="button"
                     onClick={() => setIsNiche(false)}
-                    className={`p-4 rounded-lg border text-sm text-left transition flex flex-col justify-between h-[100px] ${
+                    className={`p-4 rounded-xl border text-sm text-left transition flex flex-col justify-between h-[100px] ${
                       !isNiche 
-                        ? 'bg-iris-pulse/5 border-iris-pulse text-iris-pulse' 
-                        : 'bg-white border-obsidian-ink/15 text-fog hover:border-obsidian-ink/40'
+                        ? 'bg-[#ebf2ee] border-[#072720] text-[#072720] shadow-xs' 
+                        : 'bg-white border-[#e0ebe6] text-[#547067] hover:border-[#072720]/40'
                     }`}
                   >
                     <span className="font-bold">General Market</span>
-                    <span className={`text-[11px] mt-1 leading-normal ${!isNiche ? 'text-iris-pulse/80' : 'text-fog/80'}`}>
+                    <span className={`text-[11px] mt-1 leading-normal ${!isNiche ? 'text-[#072720]/80 font-medium' : 'text-[#547067]'}`}>
                       AI, CRM, DevTools (1-day monitor window)
                     </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsNiche(true)}
-                    className={`p-4 rounded-lg border text-sm text-left transition flex flex-col justify-between h-[100px] ${
+                    className={`p-4 rounded-xl border text-sm text-left transition flex flex-col justify-between h-[100px] ${
                       isNiche 
-                        ? 'bg-iris-pulse/5 border-iris-pulse text-iris-pulse' 
-                        : 'bg-white border-obsidian-ink/15 text-fog hover:border-obsidian-ink/40'
+                        ? 'bg-[#ebf2ee] border-[#072720] text-[#072720] shadow-xs' 
+                        : 'bg-white border-[#e0ebe6] text-[#547067] hover:border-[#072720]/40'
                     }`}
                   >
                     <span className="font-bold">Niche Market</span>
-                    <span className={`text-[11px] mt-1 leading-normal ${isNiche ? 'text-iris-pulse/80' : 'text-fog/80'}`}>
+                    <span className={`text-[11px] mt-1 leading-normal ${isNiche ? 'text-[#072720]/80 font-medium' : 'text-[#547067]'}`}>
                       Rare tech stack, narrow focus (7-day monitor window)
                     </span>
                   </button>
@@ -331,7 +332,7 @@ export default function Settings() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-obsidian-ink hover:bg-obsidian-ink/95 text-white font-medium rounded-full disabled:opacity-50 flex items-center justify-center transition shadow-sm text-sm"
+                className="w-full py-3.5 bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold rounded-full disabled:opacity-50 flex items-center justify-center transition shadow-sm text-sm"
               >
                 {loading ? (
                   <span className="flex items-center space-x-2">
@@ -353,54 +354,54 @@ export default function Settings() {
             <form onSubmit={handleStartMonitoring} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                     Product Name
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm"
+                    className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm font-medium"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                     Competitor Brands
                   </label>
-                  <p className="text-[9px] text-fog mb-1">
+                  <p className="text-[9px] text-[#547067] mb-1">
                     Enter direct commercial competitors manually (comma-separated).
                   </p>
                   <input
                     type="text"
                     value={competitors}
                     onChange={(e) => setCompetitors(e.target.value)}
-                    placeholder="e.g. Browserbase, MultiOn, Skyvern"
-                    className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm"
+                    placeholder="e.g. ReplyGain, HuntIQ, Clay"
+                    className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Product Description
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
-                  className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm resize-none leading-relaxed"
+                  className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm resize-none leading-relaxed font-medium"
                   required
                 />
               </div>
 
               {/* Deep Context USPs */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Unique Selling Propositions (USPs)
                 </label>
-                <p className="text-[9px] text-fog mb-1">
+                <p className="text-[9px] text-[#547067] mb-1">
                   Key differentiators that stand out to buyers (comma-separated).
                 </p>
                 <input
@@ -408,81 +409,81 @@ export default function Settings() {
                   value={usps}
                   onChange={(e) => setUsps(e.target.value)}
                   placeholder="e.g. Bypasses Cloudflare, 24/7 API sweeps, Free trial"
-                  className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm"
+                  className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm font-medium"
                 />
               </div>
 
               {/* In-depth Problem Solved */}
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Detailed Problem Solved
                 </label>
                 <textarea
                   value={problemSolved}
                   onChange={(e) => setProblemSolved(e.target.value)}
                   rows={2}
-                  className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm resize-none leading-relaxed"
+                  className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm resize-none leading-relaxed font-medium"
                 />
               </div>
 
               {/* AI Vision UI Description */}
               {visualDescription && (
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                     Product Visual look & complexity (AI Vision)
                   </label>
                   <textarea
                     value={visualDescription}
                     onChange={(e) => setVisualDescription(e.target.value)}
                     rows={2}
-                    className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm resize-none leading-relaxed bg-zinc-50"
+                    className="w-full p-3 bg-[#f4f7f5] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm resize-none leading-relaxed font-mono"
                   />
                 </div>
               )}
 
               {/* Target ICP Context Summary */}
               {icpInfo && (
-                <div className="bg-obsidian-ink/5 border border-obsidian-ink/10 p-4 rounded-lg space-y-2 text-xs">
-                  <h4 className="font-bold uppercase tracking-wider text-obsidian-ink">Ideal Customer Profile (ICP)</h4>
+                <div className="bg-[#ebf2ee] border border-[#d4af37]/40 p-4 rounded-xl space-y-2 text-xs">
+                  <h4 className="font-bold uppercase tracking-wider text-[#072720]">Ideal Customer Profile (ICP)</h4>
                   <div>
-                    <span className="font-bold text-fog uppercase tracking-wide mr-1.5">Audience:</span>
-                    <span className="text-obsidian-ink">{icpInfo.target_audience}</span>
+                    <span className="font-bold text-[#547067] uppercase tracking-wide mr-1.5">Audience:</span>
+                    <span className="text-[#072720] font-semibold">{icpInfo.target_audience}</span>
                   </div>
                   <div>
-                    <span className="font-bold text-fog uppercase tracking-wide mr-1.5">Pain Point:</span>
-                    <span className="text-obsidian-ink">{icpInfo.pain_point_solved}</span>
+                    <span className="font-bold text-[#547067] uppercase tracking-wide mr-1.5">Pain Point:</span>
+                    <span className="text-[#072720] font-semibold">{icpInfo.pain_point_solved}</span>
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Subreddits to Monitor
                 </label>
-                <p className="text-[9px] text-fog mb-1">
+                <p className="text-[9px] text-[#547067] mb-1">
                   AI suggested specific subreddits. Edit or add more.
                 </p>
                 <input
                   type="text"
                   value={subreddits}
                   onChange={(e) => setSubreddits(e.target.value)}
-                  className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-sm"
+                  className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-sm font-medium"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-obsidian-ink mb-1.5">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#072720] mb-1.5">
                   Buyer-Intent Search Queries
                 </label>
-                <p className="text-[10px] text-fog mb-2 leading-relaxed">
+                <p className="text-[10px] text-[#547067] mb-2 leading-relaxed">
                   These queries are scanned across social engines to match intent leads. Edited terms must be comma-separated.
                 </p>
                 <textarea
                   value={keywords}
                   onChange={(e) => setKeywords(e.target.value)}
                   rows={3}
-                  className="w-full p-3 bg-white border border-obsidian-ink/20 focus:border-obsidian-ink rounded-lg text-obsidian-ink focus:outline-none transition text-[13px] leading-relaxed resize-y"
+                  className="w-full p-3 bg-[#f8faf8] border border-[#e0ebe6] focus:border-[#072720] rounded-xl text-[#072720] focus:outline-none transition text-[13px] leading-relaxed resize-y font-mono"
                   required
                 />
               </div>
@@ -491,7 +492,7 @@ export default function Settings() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-6 py-3 bg-white border border-obsidian-ink text-obsidian-ink hover:bg-obsidian-ink hover:text-white font-medium rounded-full transition text-sm"
+                  className="px-6 py-3 bg-white border border-[#072720] text-[#072720] hover:bg-[#ebf2ee] font-semibold rounded-full transition text-sm"
                 >
                   Back
                 </button>
@@ -499,7 +500,7 @@ export default function Settings() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-obsidian-ink hover:bg-obsidian-ink/90 text-white font-medium rounded-full disabled:opacity-50 flex items-center justify-center transition shadow-sm text-sm"
+                  className="flex-1 py-3 bg-[#072720] hover:bg-[#0d3c30] text-white font-semibold rounded-full disabled:opacity-50 flex items-center justify-center transition shadow-sm text-sm"
                 >
                   {loading ? (
                     <span className="flex items-center space-x-2">
@@ -514,11 +515,11 @@ export default function Settings() {
                   )}
                 </button>
               </div>
-              <div className="text-center pt-4 border-t border-obsidian-ink/10 mt-6">
+              <div className="text-center pt-4 border-t border-[#e0ebe6] mt-6">
                 <button
                   type="button"
                   onClick={handleResetForNewScan}
-                  className="text-xs text-iris-pulse hover:underline font-semibold"
+                  className="text-xs text-[#072720] hover:underline font-bold"
                 >
                   Scan a new Landing Page URL instead
                 </button>
@@ -530,3 +531,4 @@ export default function Settings() {
     </div>
   )
 }
+
