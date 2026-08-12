@@ -15,11 +15,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-dots selection:bg-[#d4af37]/20 selection:text-[#072720]">
+    <div className="min-h-screen bg-[#f4f7f5] text-[#072720] flex flex-col antialiased bg-grid-pattern selection:bg-[#d4af37]/20 selection:text-[#072720] relative">
       
       {/* 1. Executive Top Navbar */}
       <header className="sticky top-0 z-50 bg-[#f4f7f5]/90 backdrop-blur-md border-b border-[#e0ebe6] transition-all">
-        <div className="max-w-[1180px] mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-[1240px] mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-3xl font-display font-extrabold text-[#072720] tracking-tight group-hover:scale-105 transition-transform">czero</span>
@@ -54,54 +54,84 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. Hero Section */}
-      <section className="pt-20 pb-20 px-6 max-w-[1180px] mx-auto text-center relative overflow-hidden">
-        {/* Animated Background Pulse Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#d4af37]/10 rounded-full blur-3xl -z-10 pointer-events-none animate-pulse"></div>
+      {/* 2. Hero Section with Rich Patterns & Floating Widgets */}
+      <section className="pt-20 pb-24 px-6 max-w-[1240px] mx-auto text-center relative">
+        
+        {/* Concentric Radar Wave Ring Pattern Background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] border border-[#d4af37]/15 rounded-full -z-10 pointer-events-none animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-[#072720]/10 rounded-full -z-10 pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-gradient-to-tr from-[#d4af37]/15 via-transparent to-[#10b981]/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
+        {/* Floating Signal Widget Left */}
+        <div className="hidden lg:flex absolute left-4 top-36 bg-white/95 backdrop-blur-md border border-[#072720]/15 p-3.5 rounded-2xl shadow-xl animate-float-slow flex-col items-start gap-1 w-48 text-left z-10">
+          <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#10b981] uppercase tracking-wider">
+            <span className="w-2 h-2 bg-[#10b981] rounded-full animate-ping"></span>
+            <span>Live Signal</span>
+          </div>
+          <p className="text-xs font-bold text-[#072720] line-clamp-1">"Looking for B2B dev tools..."</p>
+          <div className="text-[10px] font-mono text-[#a88720] font-bold">r/SaaS • 98% Match</div>
+        </div>
+
+        {/* Floating Signal Widget Right */}
+        <div className="hidden lg:flex absolute right-4 top-40 bg-[#fffdf7]/95 backdrop-blur-md border border-[#d4af37]/60 p-3.5 rounded-2xl shadow-xl animate-float-reverse flex-col items-start gap-1 w-52 text-left z-10">
+          <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#a88720] uppercase tracking-wider">
+            <span className="w-2 h-2 bg-[#d4af37] rounded-full gold-glow"></span>
+            <span>Verified Lead</span>
+          </div>
+          <p className="text-xs font-bold text-[#072720] line-clamp-1">"Need automated scraper..."</p>
+          <div className="text-[10px] font-mono text-[#10b981] font-bold">Hacker News • 95% Match</div>
+        </div>
+
+        {/* Eyebrow Pill Badge */}
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 bg-[#fbf7e8] border border-[#d4af37]/60 rounded-full text-[11px] font-bold text-[#a88720] uppercase tracking-wider mb-8 shadow-xs">
           <span className="relative flex items-center justify-center w-2 h-2">
             <span className="absolute w-3 h-3 bg-[#10b981] rounded-full animate-ping opacity-75"></span>
             <span className="w-2 h-2 bg-[#10b981] rounded-full"></span>
           </span>
-          <span>AUTONOMOUS B2B INTENT RADAR • 12 SOCIAL FEEDS MONITORED</span>
+          <span>AUTONOMOUS B2B INTENT RADAR • 12 FEEDS MONITORED</span>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl font-display font-extrabold tracking-tight text-[#072720] max-w-4xl mx-auto leading-[1.08] mb-6">
-          Get your first <span className="relative inline-block text-[#927218]">10 paying users<span className="absolute bottom-1.5 left-0 right-0 h-3 bg-[#d4af37]/30 -z-10 rounded-sm"></span></span> by Sunday.
+        {/* Hero Title with Enhanced Typography */}
+        <h1 className="text-5xl sm:text-7xl md:text-8xl font-display font-extrabold tracking-tight text-[#072720] max-w-5xl mx-auto leading-[1.04] mb-6">
+          Get your first <span className="relative inline-block text-[#927218]">10 paying users<span className="absolute bottom-2 left-0 right-0 h-4 bg-[#d4af37]/35 -z-10 rounded-sm"></span></span> by Sunday.
         </h1>
 
-        <p className="text-[#547067] text-base sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
+        <p className="text-[#547067] text-base sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10 font-sans font-medium">
           Paste your SaaS URL. Czero continuously monitors 12 multichannel feeds every 15 minutes, filters out promoter spam, and delivers qualified buyer leads with ready-to-send AI outreach drafts.
         </p>
 
-        {/* Quick URL Scanner Form */}
-        <form onSubmit={handleQuickScan} className="max-w-xl mx-auto bg-white border border-[#072720]/20 p-2.5 rounded-full shadow-[0_12px_40px_rgba(7,39,32,0.08)] hover:shadow-[0_16px_48px_rgba(7,39,32,0.12)] transition-all flex items-center gap-2 mb-6">
+        {/* Enhanced Quick URL Scanner Form Box */}
+        <form onSubmit={handleQuickScan} className="max-w-xl mx-auto bg-white border-2 border-[#072720]/20 p-2.5 rounded-full shadow-[0_16px_50px_rgba(7,39,32,0.12)] hover:border-[#072720] transition-all flex items-center gap-2 mb-8">
+          <div className="pl-4 text-lg">🌐</div>
           <input
             type="url"
             value={quickUrl}
             onChange={(e) => setQuickUrl(e.target.value)}
             placeholder="https://your-saas-product.com"
-            className="flex-1 bg-transparent px-6 py-2.5 text-sm font-semibold text-[#072720] placeholder-[#547067]/60 focus:outline-none"
+            className="flex-1 bg-transparent px-3 py-2 text-sm font-semibold text-[#072720] placeholder-[#547067]/60 focus:outline-none"
             required
           />
           <button
             type="submit"
-            className="bg-[#072720] hover:bg-[#0d3c30] text-white font-bold text-xs px-7 py-3.5 rounded-full transition shadow-sm hover:shadow-md whitespace-nowrap inline-flex items-center gap-2 group"
+            className="bg-[#072720] hover:bg-[#0d3c30] text-white font-bold text-xs px-7 py-3.5 rounded-full transition shadow-md hover:shadow-lg whitespace-nowrap inline-flex items-center gap-2 group"
           >
             <span>Scan My Product</span>
-            <span className="text-sm group-hover:translate-x-0.5 transition-transform">→</span>
+            <span className="text-sm text-[#d4af37] group-hover:translate-x-1 transition-transform">→</span>
           </button>
         </form>
 
-        <p className="text-xs text-[#547067] font-mono font-medium">
-          ⚡ Free instant analysis • No credit card required • Scans Reddit, HN, Exa Web, Twitter & LinkedIn
+        <p className="text-xs text-[#547067] font-mono font-semibold flex items-center justify-center gap-2">
+          <span>⚡ Free Instant Analysis</span>
+          <span>•</span>
+          <span>No Credit Card Required</span>
+          <span>•</span>
+          <span>Scans Reddit, HN, Exa Web, Twitter & LinkedIn</span>
         </p>
       </section>
 
       {/* 3. Multichannel Feeds Monitored Pattern Bar */}
-      <section className="py-10 bg-white border-y border-[#e0ebe6]">
-        <div className="max-w-[1180px] mx-auto px-6">
+      <section className="py-10 bg-white border-y border-[#e0ebe6] relative">
+        <div className="max-w-[1240px] mx-auto px-6">
           <div className="text-center text-[10px] font-mono font-bold text-[#547067] uppercase tracking-widest mb-6">
             12 REAL-TIME INTENT SOURCES MONITORED AUTOMATICALLY
           </div>
@@ -132,7 +162,7 @@ export default function Home() {
 
       {/* 4. Live Product Lead Card Preview Demo */}
       <section id="live-demo" className="py-20 px-6">
-        <div className="max-w-[1180px] mx-auto">
+        <div className="max-w-[1240px] mx-auto">
           <div className="text-center mb-14">
             <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
               REAL-TIME SIGNAL INTELLIGENCE
@@ -192,7 +222,7 @@ export default function Home() {
       </section>
 
       {/* 5. Product USPs Grid */}
-      <section id="features" className="py-20 px-6 max-w-[1180px] mx-auto">
+      <section id="features" className="py-20 px-6 max-w-[1240px] mx-auto">
         <div className="text-center mb-16">
           <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
             WHY FOUNDERS CHOOSE CZERO
@@ -248,7 +278,7 @@ export default function Home() {
 
       {/* 6. How It Works Steps */}
       <section id="how-it-works" className="py-20 bg-white border-y border-[#e0ebe6] px-6">
-        <div className="max-w-[1180px] mx-auto">
+        <div className="max-w-[1240px] mx-auto">
           <div className="text-center mb-16">
             <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
               SIMPLE 3-STEP PIPELINE
@@ -289,7 +319,7 @@ export default function Home() {
       </section>
 
       {/* 7. Pricing Section */}
-      <section id="pricing" className="py-20 px-6 max-w-[1180px] mx-auto">
+      <section id="pricing" className="py-20 px-6 max-w-[1240px] mx-auto">
         <div className="text-center mb-16">
           <div className="text-xs font-bold text-[#a88720] uppercase tracking-wider mb-2 font-mono">
             TRANSPARENT PRICING
@@ -380,7 +410,7 @@ export default function Home() {
 
       {/* 8. Footer */}
       <footer className="py-12 border-t border-[#e0ebe6] bg-white px-6">
-        <div className="max-w-[1180px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-[#547067]">
+        <div className="max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-[#547067]">
           <div className="flex items-center gap-2">
             <span className="font-display font-bold text-[#072720] text-base">czero</span>
             <span>— Intent-Based B2B Lead Generation Radar</span>
