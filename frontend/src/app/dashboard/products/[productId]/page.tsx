@@ -16,6 +16,26 @@ interface Lead {
   linkedin_url?: string
 }
 
+// Client-side HTML Entity Decoder & Tag Stripper
+const sanitizeText = (rawText: string): string => {
+  if (!rawText) return ''
+  let cleaned = rawText
+    .replace(/&#x2F;/g, '/')
+    .replace(/&#x2f;/g, '/')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+
+  // Strip raw HTML tags like <a ...>, </a>, <p>, <pre>, <code>
+  cleaned = cleaned.replace(/<[^>]+>/g, ' ')
+  // Normalize whitespace
+  return cleaned.replace(/\s+/g, ' ').trim()
+}
+
 export default function ProductDashboard() {
   const params = useParams()
   const productId = params.productId as string
@@ -29,9 +49,24 @@ export default function ProductDashboard() {
   const [isScanning, setIsScanning] = useState(false)
   const [scanStatus, setScanStatus] = useState('')
   const [scanResult, setScanResult] = useState('')
-  const [countdown, setCountdown] = useState(900) // 15 minutes = 900 seconds
+  const [countdown, setCountdown] = useState(900)
   const [lastChecked, setLastChecked] = useState<string>('Just now')
   const [activeTab, setActiveTab] = useState<'all' | 'hot' | 'warm'>('all')
+
+  // Synchronize next sweep target time globally in localStorage
+  const getOrInitSweepTarget = (): number => {
+    if (typeof window === 'undefined') return Date.now() + 900000
+    const storedTarget = localStorage.getItem('czero_next_sweep_target')
+    if (storedTarget) {
+      const targetTime = parseInt(storedTarget, 10)
+      if (targetTime > Date.now()) {
+        return targetTime
+      }
+    }
+    const newTarget = Date.now() + 900000 // 15 minutes = 900,000 ms
+    localStorage.setItem('czero_next_sweep_target', newTarget.toString())
+    return newTarget
+  }
 
   const fetchLeads = async () => {
     if (!productId) return
@@ -55,9 +90,17 @@ export default function ProductDashboard() {
       }
 
       const data = await response.json()
-      setLeads(data.leads || [])
+      const rawLeads: Lead[] = data.leads || []
+      
+      // Sanitize lead text dynamically on fetch
+      const cleanedLeads = rawLeads.map(lead => ({
+        ...lead,
+        text: sanitizeText(lead.text),
+        reasoning: sanitizeText(lead.reasoning)
+      }))
+
+      setLeads(cleanedLeads)
       setLastChecked(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
-      setCountdown(900) // Reset 15-min countdown on fresh fetch
     } catch (err) {
       console.error("Error fetching leads from database:", err)
     } finally {
@@ -73,13 +116,25 @@ export default function ProductDashboard() {
     return () => clearInterval(interval)
   }, [productId])
 
-  // Live 15-minute countdown ticker
+  // Persistent 15-minute countdown ticker tied to target timestamp
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 900))
-    }, 1000)
+    const updateCountdown = () => {
+      const target = getOrInitSweepTarget()
+      const diff = Math.max(0, Math.floor((target - Date.now()) / 1000))
+      setCountdown(diff)
+      if (diff === 0) {
+        // Sweep interval elapsed — reset target and refetch
+        const newTarget = Date.now() + 900000
+        localStorage.setItem('czero_next_sweep_target', newTarget.toString())
+        fetchLeads()
+      }
+    }
+
+    updateCountdown()
+    const timer = setInterval(updateCountdown, 1000)
     return () => clearInterval(timer)
   }, [])
+
 
   // Trigger manual sync sweep
   const handleManualScan = async () => {

@@ -37,13 +37,15 @@ This file contains the current dev status, architectural changes, and active ses
 
 ### G. False Positive Elimination & Intent Scoring Fixes
 - **HTML Sanitization**: Added `clean_text` in [llm_scorer.py](file:///c:/Users/satya/Czero/api/app/engines/scorer/llm_scorer.py) to unescape HTML entities (`&gt;`, `&#x2F;`, `&amp;`) and strip HTML tags (`<p>`, `<code>`, `<pre>`).
-- **Agency & Seller Pre-Filter**: Added regex rules to auto-drop agency/freelancer posts (`"SEEKING WORK"`), job ads (`"Hiring"`), and product showcases (`"Lite Agent is..."`) to **Score 0 (COLD)** before LLM evaluation.
+- **Agency, Seller & Job Seeker Auto-Drop**: Added regex rules to auto-drop agency/freelancer posts (`"SEEKING WORK"`), job ads (`"Hiring"`), resume/CV posts (`"willing to relocate"`, `"technologies:"`), and product showcases (`"Lite Agent is..."`) to **Score 0 (COLD)** before LLM evaluation.
 - **Mini-Batch Chunking**: Reduced LLM batch size to max 10 posts per prompt to eliminate cross-post context hallucinations.
 
 ### H. Product Leads Feed UI & Live Radar Status Bar
-- **Live Background Monitoring Bar**: Pulsing emerald radar orb (`animate-ping`) and dynamic **15-minute countdown timer** (`14:59` $\rightarrow$ `00:00`) showing exact time until the next automated background sweep.
+- **Persistent Countdown State**: Synchronized the 15-minute background sweep target timestamp in `localStorage` (`czero_next_sweep_target`) so switching between workspaces or reloading pages never resets the timer.
+- **Client-Side Text Sanitizer**: Added `sanitizeText` helper in [page.tsx](file:///c:/Users/satya/Czero/frontend/src/app/dashboard/products/%5BproductId%5D/page.tsx) to decode HTML entities (`&#x2F;` $\rightarrow$ `/`, `&amp;` $\rightarrow$ `&`) and strip raw HTML tags (`<a href...>`, `</a>`, `<p>`) dynamically on fetch and render.
 - **Category Tab Filters**: Instant tab filtering for `All Leads`, `🔥 Hot (80+)`, and `⚡ Warm (40-79)`.
 - **Upgraded Lead Cards**: Direct `"Open Thread ↗"` button to jump straight to source URLs, highlighted AI reasoning boxes, and score relevance pills.
+
 
 ---
 

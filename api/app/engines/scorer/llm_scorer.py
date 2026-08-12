@@ -183,16 +183,21 @@ class LLMIntentScorer:
         cleaned = clean_text(text)
         text_lower = cleaned.lower()
 
-        # SELLER / AGENCY / FREELANCER patterns — score 0 (sellers, NOT buyers)
+        # SELLER / AGENCY / FREELANCER / JOB SEEKER patterns — score 0 (sellers/job seekers, NOT buyers)
         seller_patterns = [
             r"seeking work", r"seeking contract", r"available for hire",
             r"freelancer", r"agency", r"team of developers", r"pm \+ 1 qa",
             r"hiring sales agent", r"hiring developer", r"hiring engineer",
             r"job opening", r"co-founder wanted",
+            r"willing to relocate", r"relocate:", r"technologies:",
+            r"resume", r"curriculum vitae", r"portfolio:",
+            r"location:", r"remote: yes", r"remote: no",
+            r"seeking role", r"open to work",
         ]
         for pattern in seller_patterns:
             if re.search(pattern, text_lower):
-                return {"score": 0, "reason": "Seller/agency/hiring post — author is offering services, not buying"}
+                return {"score": 0, "reason": "Seller/agency/job seeker post — author is offering services or seeking a job, not buying"}
+
 
         # PROMOTIONAL patterns — these are builders/promoters, NOT buyers
         promotional_patterns = [
